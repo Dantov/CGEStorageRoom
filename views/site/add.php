@@ -2,8 +2,6 @@
 use yii\helpers\Url;
 use app\models\User;
 
-$this->title = 'Add New Model';
-
 $tt=time();
 $this->registerJsFile("@web/js/add-edit/Validator.js?v=$tt",['depends' => [\app\assets\AppAsset::class]]);
 $this->registerJsFile("@web/js/add-edit/AddEdit.js?v=$tt",['depends' => [\app\assets\AppAsset::class]]);
@@ -14,63 +12,55 @@ $this->registerJsFile("@web/js/add-edit/HandlerFiles.js?v=$tt",['depends' => [\a
 
 $modelStatus = (int)$stockData['model_status']; 
 $session = Yii::$app->session;
+$this->title = 'Edit Item';
 ?>
 
 
 <?php if ( $session->hasFlash('cloned') ): ?>
-    <h1 class="main-title-w3layouts mb-2 text-center">Модель клонирована успешно!</h1>
+    <h1 class="main-title-w3layouts mb-2 text-center">Item cloned success!</h1>
 <?php elseif ( $session->hasFlash('editModel') ): ?>
-    <h1 class="main-title-w3layouts mb-2 text-center">Редактировать модель</h1>
+    <h1 class="main-title-w3layouts mb-2 text-center">Edit item</h1>
 <?php else: ?>
-    <h1 class="main-title-w3layouts mb-2 text-center">Добавить новую модель</h1>
+    <?php $this->title = 'Add New Item'; ?>
+    <h1 class="main-title-w3layouts mb-2 text-center">Add new item</h1>
 <?php endif; ?>
 
 
 <!-- TEXT DATA -->
 <div class="outer-w3-agile mt-3">
-    <h4 class="tittle-w3-agileits mb-4"><i class="fa-regular fa-file-lines"></i> Общие данные</h4>
+    <h4 class="tittle-w3-agileits mb-4"><i class="fa-regular fa-file-lines"></i> General data</h4>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="number_3d">№3Д</label>
+                <label for="item_number">Item №</label>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
                     </div>
-                    <input type="text" editable class="form-control" name="number_3d" id="number_3d" value="<?=$stockData['number_3d']?>" placeholder="">
+                    <input type="text" editable class="form-control" name="item_number" id="item_number" value="<?=$stockData['item_number']?>" placeholder="">
                 </div>
             </div>
             <div class="form-group col-md-6">
-                <label for="modeller3d">3Д модельер</label>
+                <label for="item_name">Item Name</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <div class="input-group-text badge-light ">
-                            <i class="fa-regular fa-square-full"></i>
-                        </div>
+                        <div class="input-group-text badge-light "><i class="fa-regular fa-square-full"></i></div>
                     </div>
-                    <input type="text" editable class="form-control" name="modeller3d" id="modeller3d" value="<?=$stockData['modeller3d']?>" placeholder="" >
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"></button>
-                        <div class="dropdown-menu p-1">
-                            <?php foreach ($sevData['modeller3d'] as $key => $m3d): ?>
-                            <a class="dropdown-item p-1" style="cursor: pointer;" elemToAdd><?php echo $m3d['name'] ?></a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
+                    <input type="text" editable class="form-control" name="item_name" id="item_name" value="<?=$stockData['item_name']?>" placeholder="" >
                 </div>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-3">
-                <label for="model_type">Вид модели</label>
+                <label for="item_category">Item category</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
                     </div>
-                    <input type="text" editable class="form-control" name="model_type" id="model_type" value="<?=$stockData['model_type']?>"placeholder="" >
+                    <input type="text" editable class="form-control" name="item_category" id="item_category" value="<?=$stockData['item_category']?>"placeholder="">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"></button>
                         <div class="dropdown-menu p-1">
-                            <?php foreach ($sevData['model_type'] as $key => $mtype): ?>
+                            <?php foreach ($sevData['category'] as $key => $mtype): ?>
                             <a class="dropdown-item p-1" style="cursor: pointer;" elemToAdd><?php echo $mtype['name'] ?></a>
                             <?php endforeach; ?>
                         </div>
@@ -78,88 +68,66 @@ $session = Yii::$app->session;
                 </div>
             </div>
             <div class="form-group col-md-3">
-                <label for="size_range">Размеры</label>
+                <label for="item_size">Item size</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
                     </div>
-                    <input type="text" editable class="form-control" name="size_range" id="size_range" value="<?=$stockData['size_range']?>" placeholder="">
+                    <input type="text" editable class="form-control" name="item_size" id="item_size" value="<?=$stockData['item_size']?>" placeholder="">
                 </div>
             </div>
             <div class="form-group col-md-3">
-                <label for="model_weight">Общий вес 3д модели</label>
+                <label for="item_price">Price</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
                     </div>
-                    <input type="text" editable class="form-control" value="<?=$stockData['model_weight']?>" name="model_weight" id="model_weight" placeholder="">
+                    <input type="text" editable class="form-control" value="<?=$stockData['item_price']?>" name="item_price" id="item_price" placeholder="">
                 </div>
             </div>
             <?php if (User::hasPermission('model_price')): ?>
             <div class="form-group col-md-3">
-                <label for="model_price">Цена 3д</label>
+                <label for="item_price_rent">Price for rent</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
                     </div>
-                    <input type="text" editable class="form-control" value="<?=$stockData['model_cost']?>" name="model_cost" id="model_cost" placeholder="">
-                </div>
-            </div>
-            <?php endif; ?>
-            <?php if (User::hasPermission('price_for_sale')): ?>
-            <div class="form-group col-md-3">
-                <label for="model_price">3D sale price: </label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
-                    </div>
-                    <input type="text" editable class="form-control" value="<?=$stockData['model_cost']?>" name="model_cost" id="model_cost" placeholder="">
+                    <input type="text" editable class="form-control" value="<?=$stockData['item_price_rent']?>" name="item_price_rent" id="item_price_rent" placeholder="">
                 </div>
             </div>
             <?php endif; ?>
         </div>
         <div class="form-group">
-            <label for="customers">Заказчики</label>
+            <label for="projects">Projects</label>
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
                 </div>
-                <input type="text" disabled editable class="form-control" value="<?=htmlspecialchars($stockData['client'])?>" name="client" id="client" aria-label="" >
+                <input type="text" disabled editable class="form-control" value="<?=htmlspecialchars($stockData['project'])?>" name="project" id="project" aria-label="" >
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"></button>
                     <div class="dropdown-menu">
-                        <?php foreach ($sevData['client'] as $key => $value): ?>
+                        <?php foreach ($sevData['project'] as $key => $value): ?>
                         <a class="dropdown-item" style="cursor: pointer;" elemToAdd><?php echo $value['name'] ?></a>
                         <?php endforeach; ?>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <label for="description"><i class="fa-regular fa-message"></i> Description</label>
+            <textarea class="form-control" editable name="description" id="description" rows="3"><?=$stockData['description'] ?></textarea>
+        </div>
 </div>
 
-<!--// MATERIALS -->
-<div class="outer-w3-agile mt-3 tableMats" id="tableAllMats">
-    <h4 class="tittle-w3-agileits mb-4"><i class="fa-solid fa-ring"></i> Материалы <button type="button" class="btn btn-info" id="addMats"><i class="fa-solid fa-plus"></i></button></h4>
-    <?php foreach ($stockData['materials'] as $material): ?>
-    <?php require _webDIR_ . 'includes/add-edit/mats_protoRow.php'; ?>
-    <?php endforeach; ?>
-</div>
-
-<!--// GEMS -->
-<div class="outer-w3-agile mt-3 tableGems">
-    <h4 class="tittle-w3-agileits mb-4"><i class="fa-solid fa-gem"></i> Камни <button type="button" class="btn btn-info" id="addGems"><i class="fa-solid fa-plus"></i></button></h4>
-    <?php foreach ($stockData['gems'] as $gem): ?>
-    <?php require _webDIR_ . 'includes/add-edit/gems_protoRow.php'; ?>
-    <?php endforeach; ?>
-</div>
 <?php if ( User::hasPermission('images') || User::hasPermission('files') ): ?>
 <div class="outer-w3-agile mt-3 pt-3 pb-3 <?=($modelStatus === 2)?"d-none":"" ?>">
     <div class="card-deck text-center row">
         <div class="card box-shadow col-xl-12 col-md-12">
             <div class="card-header p-5 border border-secondary rounded" id="drop-area"  title="Загрузить Файлы">
-                <p>Загрузить файлы можно перетащив их в эту область.</p>
-                <p> Форматы: .jpg .jpeg .png .gif .webp .stl .mgx .3dm .ai .dxf .obj</p></br>
-                <button type="button" id="addImageFiles" class="btn btn-outline-secondary btn-block"><i class="far fa-images"></i> Выбрать файлы</button>
+                <p>To upload files drop it in this area.</p>
+                <p> Formats: .jpg .jpeg .png .gif .webp</p></br>
+                <button type="button" id="addImageFiles" class="btn btn-outline-secondary btn-block"><i class="far fa-images"></i> Select manualy</button>
             </div>
         </div>
     </div>
@@ -170,7 +138,7 @@ $session = Yii::$app->session;
         <!-- IMAGES -->
         <?php if ( User::hasPermission('images') ): ?>
         <div class="outer-w3-agile col-xl mt-3 mr-xl-3 p-2">
-            <h4 class="tittle-w3-agileits">Картинки</h4>
+            <h4 class="tittle-w3-agileits">Images</h4>
             <hr>
             <div class="row justify-content-center pl-2 pr-2" id="picts">
                 <?php foreach ($stockData['images'] as $image): ?>
@@ -180,12 +148,11 @@ $session = Yii::$app->session;
         </div>
         <?php endif ?>
         <!--// IMAGES -->
-
         <!-- 3D Files -->
         <?php if ( User::hasPermission('files') ): ?>
         <div class="outer-w3-agile col-xl mt-3 mr-xl-3 p-2">
             <h4 class="tittle-w3-agileits">
-                3Д Файлы: 
+                Addition files: 
                 <small>(Origin: <?=$datafileSizes['origin']?>) (Zipped: <?=$datafileSizes['zip']?>)</small>
             </h4>
             <hr>
@@ -203,7 +170,7 @@ $session = Yii::$app->session;
 </div>
 <div class="outer-w3-agile mt-3">
     <div class="form-group">
-        <label for="tags"><i class="fa-solid fa-tags"></i> Готовые Теги:</label>
+        <label for="tags"><i class="fa-solid fa-tags"></i> Hashtags:</label>
         <div class="btn-group-toggle" data-toggle="buttons" id="hashtags">
             <?php foreach ($sevData['hashtag'] as $key => $value): ?>
                 <label class="btn btn-outline-info shadow-sm mb-1 <?php if ($value['checked'] == 1) echo "active"?>">
@@ -211,7 +178,7 @@ $session = Yii::$app->session;
                 </label>
             <?php endforeach; ?>
         </div>
-        <label for="mytags"><i class="fa-solid fa-tag"></i> Свой Тег:</label>
+        <label for="mytags"><i class="fa-solid fa-tag"></i> Add own hashtag:</label>
         <div class="input-group">
             <div class="input-group-prepend">
                 <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
@@ -219,13 +186,9 @@ $session = Yii::$app->session;
             <input class="form-control" type="text" onchange="hashtagByText(this)" name="hashtags" id="hashtags" rows="1" value="">
         </div>
     </div>
-    <div class="form-group">
-        <label for="description"><i class="fa-regular fa-message"></i> Примечания</label>
-        <textarea class="form-control" editable name="description" id="description" rows="2"><?=$stockData['description'] ?></textarea>
-    </div>
     <div class="form-group row">
         <div class="col-sm-5">
-            <span>Дата создания 3д модели: </span>
+            <span>Item receipt date: </span>
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
@@ -243,7 +206,7 @@ $session = Yii::$app->session;
         </div>
          <div class="col-sm-4 float-right">
             <div class="float-right">
-                <span>Дата добавления 3д модели в базу:</span>
+                <span>Item adding date:</span>
                 <input class="form-control" readonly type="date" name="date" value="<?=$stockData['date'] ?>"/>
                 <span>Добавил: <?=User::getUsernameByID($stockData['creator_id'])?></span>
             </div>
@@ -252,35 +215,35 @@ $session = Yii::$app->session;
     <div class="form-group row" id="publishRow">
         <div class="col-sm-5 float-left">
             <?php if ( $modelStatus === 0 ): ?>
-                <i class="text-danger">Модель не видна в поиске.</i></br>
-                <i class="text-danger">Eсли все данные верны, опубликуйте её!</i></br>
-                <button type="button" class="btn btn-success" data-publish="pub">Опубликовать</button>
+                <i class="text-danger">Item has not avialable in search.</i></br>
+                <i class="text-danger">If all data is correct, publish it!</i></br>
+                <button type="button" class="btn btn-success" data-publish="pub">Publish</button>
             <?php endif; ?>
             <?php if ( $modelStatus === 1 ): ?>
-                <i class="text-success">Модель опубликованв и доступна в поиске!</i></br>
+                <i class="text-success">Item is published and avialable in search!</i></br>
             <?php endif; ?>
         </div>
         <div class="col-sm-2">
             <i class="text-danger"></i></br>
             <i class="text-danger"></i></br>
              <?php if ( $modelStatus === 1 ): ?>
-                <button type="button" class="btn btn-outline-secondary text-center" data-publish="excl">Исключить</button>
+                <button type="button" class="btn btn-outline-secondary text-center" data-publish="excl">Exclude</button>
             <?php endif; ?>
         </div>
         <div class="col-sm-5 float-right">
             <?php if ( $modelStatus !== 2 ): ?>
-                <button type="button" class="btn btn-outline-danger float-right" data-publish="del">Удалить</button>
+                <button type="button" class="btn btn-outline-danger float-right" data-publish="del">Delete</button>
             <?php endif; ?>
         </div>
         <?php if ( $modelStatus === 2 ): ?>
         <div class="col-sm-8 float-left">
-            <i class="text-danger">Модель была удалена!</i></br>
-            <i class="text-danger">Что бы восстановить её, обратитесь к администратору.</i>
+            <i class="text-danger">Item has been deleted!</i></br>
+            <i class="text-danger">To restore it, please contact an administartor.</i>
         </div>
         <div class="col-sm-4 float-right">
             <?php if ( User::isAdmin() ): ?>
-                <button type="button" class="btn btn-sm btn-warning float-right fullyRestore" data-publish="fullyRestore">Восстановить!</button>
-                <button type="button" class="btn btn-sm btn-danger float-right fullydell" data-publish="fullydell">Удалить Полностью!</button>
+                <button type="button" class="btn btn-sm btn-warning float-right fullyRestore" data-publish="fullyRestore">Restore</button>
+                <button type="button" class="btn btn-sm btn-danger float-right fullydell" data-publish="fullydell">Delete completly</button>
             <?php endif; ?>
         </div>
         <?php endif; ?>

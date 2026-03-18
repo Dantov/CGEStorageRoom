@@ -2,11 +2,11 @@
 use yii\helpers\{Html,Url};
 use app\models\User;
 
-$this->title = 'Jewel Box ' . User::getFIO();
+$this->title = 'Box ' . User::getFIO();
 ?>
 
 <div class="work-progres">
-    <h4 class="tittle-w3-agileits mb-2">Шкатулка для <?= User::getFIO()?></h4>
+    <h4 class="tittle-w3-agileits mb-2">Box for <?= User::getFIO()?></h4>
     <?php //debug($allOrders,1,1)?>
 </div>
 <?php if( empty($allOrders) ): ?>

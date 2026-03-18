@@ -110,9 +110,9 @@ class User
 
         $user = $user->one();
 
-        $user->role = json_decode($user->role,true);
-        $user->clients = json_decode($user->clients,true);
-        $user->permissions = json_decode($user->permissions,true);
+        $user->role = json_decode($user->role,true)??[];
+        $user->clients = json_decode($user->clients,true)??[];
+        $user->permissions = json_decode($user->permissions,true)??[];
 
         return self::$userData = $user;
     }
@@ -166,7 +166,7 @@ class User
 
         $user = self::userInstance();
         $permissions = Permissions::find()->select(['id','name','description'])->asArray()->all();  
-        $userPermissions = json_decode($user['permissions'],true);
+        $userPermissions = json_decode($user['permissions'],true)??[];
 
         $permittedFieldAll = [];
         foreach ( $permissions as $permission )
@@ -214,12 +214,12 @@ class User
     }
     public static function getClientsID() : array
     {
-        return json_decode(self::$userInstance['clients'],true);
+        return json_decode(self::$userInstance['clients'],true)??[];
     }
     public static function getClients() : array
     {
         $permissions = self::permissions();
-        $uClientsID = json_decode(self::$userInstance['clients'],true);
+        $uClientsID = json_decode(self::$userInstance['clients'],true)??[];
 
         $clientPerm = [];
         foreach ( $permissions as $permission ) 
@@ -242,7 +242,7 @@ class User
         } 
 
         $user = self::userInstance();
-        $roleIDs = json_decode($user['role']);
+        $roleIDs = json_decode($user['role'],true)??[];
 
         $allroles = Service_data::find()->where(['tab'=>'role'])->andWhere(['in','id',$roleIDs]);
         if ( !$allroles->exists() ) return false;

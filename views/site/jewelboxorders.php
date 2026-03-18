@@ -2,13 +2,13 @@
 use yii\helpers\{Html,Url};
 use app\models\{User,Common};
 
-$this->title = 'Jewel Box Orders';
+$this->title = 'Box Orders';
 
 //debug($allOrders,'$allOrders',1);
 ?>
 
 <div class="work-progres">
-    <h4 class="tittle-w3-agileits mb-2">Шкатулка для - <?= User::getFIO()?> - Все заказы</h4>
+    <h4 class="tittle-w3-agileits mb-2">Box for - <?= User::getFIO()?> - All Orders</h4>
 </div>
 <?php if( empty($allOrders) ): ?>
     <div class="outer-w3-agile col-xl pt-3 pb-2 mb-3">
@@ -22,7 +22,7 @@ $this->title = 'Jewel Box Orders';
 <?php $userData = $orderData['userdata']?>
 
 <button class="btn btn-<?=($orderStatus===2)?"success":"secondary"?> mb-2" type="button" data-toggle="collapse" data-target="#OrderCollapse-<?=$orderID?>" aria-expanded="false" aria-controls="OrderCollapse-<?=$orderID?>">
-    <h5 class="tittle-w3-agileits mb-2 pt-2">Заказ №<?=$orderID?> от <?=$userData['fio']?> - <?=$orderData['lastdate']?>
+    <h5 class="tittle-w3-agileits mb-2 pt-2">Заказ №<?=$orderID?> от <?=$userData['fio']??''?> - <?=$orderData['lastdate']?>
         <?php if( $orderStatus === 2 ): ?>
         <span class="badge badge-pill badge-warning">Выполнен!</span>
         <?php endif; ?>

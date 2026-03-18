@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 use app\models\MyLinkPager;
 use app\models\User;
-$this->title = 'Powered-Jewelery DataBase';
+//$this->title = 'Powered-Jewelery DataBase';
 $pagDraw = null;
 if ( $pages )
 {
@@ -43,7 +43,7 @@ $controller = $this->context;
 <?php if ( empty($stock) ): ?>
   <div class="col-4 net-not-found-left"></div>
   <div class="col-4">  
-    <h4 class="text-center">Ничего не найдено...</h4>
+    <h4 class="text-center">Nothing found...</h4>
   </div>
   <div class="col-4 net-not-found-right"></div>
 <?php endif; ?>

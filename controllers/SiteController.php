@@ -352,12 +352,9 @@ class SiteController extends GeneralController
 
         $nom = new Nom();
         $modelTypes = $nom->getModelTypes();
-        $gemsNames = $nom->getGems('names');
-        $gemsColors = $nom->getGems('color');
-        $gemsCuts = $nom->getGems('cut');
-        $gemsSizes = $nom->getGems('sizes');
+        $projects = $nom->getProjects('sizes');
 
-        $comp = compact(['modelTypes','gemsNames','gemsColors','gemsCuts','gemsSizes']);
+        $comp = compact(['modelTypes','projects']);
         return $this->render('nomenclature',$comp);
     }
 
@@ -413,22 +410,9 @@ class SiteController extends GeneralController
         if (!User::hasPermission(69)) 
             Yii::$app->response->redirect('/site')->send();
 
-        $mm =  new \app\models\serviceClasses\ModelsMover();
+        $data = "data";
 
-        $data = $mm->getStockData();
-        //debug($data,1,1);
-        //debug( $mm->checkSHAID(12) );
-
-        $files = app\models\Files::instance();
-
-        $res = [];
-        foreach ($data as $model) 
-        {
-            //$mm->moveModel($model,$files);
-            //$res[] = $model['id'] . " moved";
-        }
-
-        $comp = compact(['data','res']);
+        $comp = compact(['data']);
         return $this->render('options',$comp);
     }
     /**

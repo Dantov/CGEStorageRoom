@@ -20,7 +20,7 @@ class AuthController extends Controller
      */
     public function actionIndex()
     {
-        $this->view->title = "Login";
+        $this->view->title = "CGE::Login";
         return $this->render('login');
     }
 

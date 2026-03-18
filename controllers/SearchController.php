@@ -24,7 +24,7 @@ class SearchController extends GeneralController
 
         $session->set('SelectByClients',[]);
 
-        $session->set('SelectByClient','Все');
+        $session->set('SelectByClient','All');
         $session->set('searchFor', '');
         $session->set('selectByHashtag', '');
         $session->set('selectByModelType', '');
@@ -187,7 +187,7 @@ class SearchController extends GeneralController
         $session = Yii::$app->session;
         if ( (int)$client === 11 )
         {
-            $session->set('SelectByClient', 'Все');
+            $session->set('SelectByClient', 'All');
             return;
         }
         foreach ( $this->clients as $singleClient )

@@ -34,7 +34,7 @@ class Main extends Common
             return $this->stockQuery->andWhere(['in', 'client', $clients]);
         }
 
-        if ( $session->get('SelectByClient') !== 'Все' )
+        if ( $session->get('SelectByClient') !== 'All' )
             return $this->stockQuery->andWhere(['client' => $session->get('SelectByClient') ]);
     }
 

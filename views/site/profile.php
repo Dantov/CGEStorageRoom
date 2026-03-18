@@ -14,9 +14,9 @@ $this->registerJsFile("@web/js/users/Profile.js?v=$tt", ['depends' => [\app\asse
 
 $uidC = Crypt::strEncode( User::getID() );
 $name = User::getFIO();
-$this->title = $name . ' PROFILE';
+$this->title = 'CGE:: ' .$name . ' PROFILE';
 ?>
-<h2 class="main-title-w3layouts mb-2 text-center">Профиль</h2>
+<h2 class="main-title-w3layouts mb-2 text-center">Profile</h2>
 <nav class="inbox-nav-w3ls p-3 bg-dark text-white">
     <div class="row">
         <div class="inbox-topl col-12">
@@ -43,12 +43,12 @@ $this->title = $name . ' PROFILE';
                             </li>
                             <li class="pt-3">
                                 <button type="button" id="addImageFiles" class="btn btn-primary">
-                                    <i class="far fa-images"></i> Загрузить фото
+                                    <i class="far fa-images"></i> Upload Photo
                                 </button>
                             </li>
                             <li class="pt-3">
                                 <a type="button" href="<?=Url::to(['/site/profile/','edit'=>'dellavatar'])?>" class="btn btn-outline-dangery">
-                                    <i class="fa-solid fa-explosion"></i> Убрать
+                                    <i class="fa-solid fa-explosion"></i> Flush
                                 </a>
                             </li>
                         </ul>
@@ -64,7 +64,7 @@ $this->title = $name . ' PROFILE';
                                     <span class="email-title">Names</span>
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
-                                            <label for="username">Имя</label>
+                                            <label for="username">Name</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
@@ -73,7 +73,7 @@ $this->title = $name . ' PROFILE';
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="usersurname">Фамилия</label>
+                                            <label for="usersurname">Surname</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
@@ -82,7 +82,7 @@ $this->title = $name . ' PROFILE';
                                             </div>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label for="userthirdname">Отчество</label>
+                                            <label for="userthirdname">Lastname</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>

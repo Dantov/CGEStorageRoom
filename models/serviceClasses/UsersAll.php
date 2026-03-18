@@ -20,18 +20,22 @@ class UsersAll extends Common
         $this->userfields = [
             'id','login','name','lastname','thirdname','fio','fullFio','role','clients','permissions',
             'files_access','about','email','picture','access'];
-        $this->getAllUsers();
-        
-        if ($id > 0 && $id < PHP_INT_MAX)
-        {
-            $this->uid = $id;
+        if ( !($id > 0 && $id < PHP_INT_MAX) ) return;
+
+        $this->uid = $id;
             $this->user = $this->getUserByID($this->uid);
             if ( $this->user === false ) return;
 
+        $this->getAllUsers();
+        
+        //if ($id > 0 && $id < PHP_INT_MAX)
+        //{
+            
+
             $this->getAllPermissions();    
-        } else {
-            return;
-        }
+        //} else {
+          //  return;
+        //}
 
         parent::__construct();
 	}
@@ -107,7 +111,7 @@ class UsersAll extends Common
         foreach ( $permissions as &$permA )
             $permA['applied'] = 0;
 
-        $uPermissions = json_decode($this->user['permissions'],true);
+        $uPermissions = json_decode($this->user['permissions'],true)??[];
         foreach ( $permissions as &$perm )
         {
             if ( in_array($perm['id'], $uPermissions) )
@@ -121,7 +125,7 @@ class UsersAll extends Common
         if ( !isset($this->user['permissions']) ) 
             return [];
 
-        $userPermissions = json_decode($this->user['permissions'],true); 
+        $userPermissions = json_decode($this->user['permissions'],true)??[]; 
         $permissions = $this->getAllPermissions();
         
         $permittedFieldAll = [];
@@ -137,7 +141,7 @@ class UsersAll extends Common
     public function getClients() : array
     {
         $clients = Service_data::find()->where(['tab'=>'client'])->asArray()->orderBy('name')->all();
-        $userClients = json_decode($this->user['clients'],true);
+        $userClients = json_decode($this->user['clients'],true)??[];
         foreach( $clients as &$sClient )
             $sClient['active'] = 0;
 
@@ -159,7 +163,7 @@ class UsersAll extends Common
         if ( empty($roles) )
             $roles = $this->user['role'];
 
-        $userRoles = json_decode($roles, true);
+        $userRoles = json_decode($roles, true)??[];
         $allRoles = $this->getAllRoles();
         $names = '';
         foreach( $userRoles as $roleID )
@@ -178,7 +182,7 @@ class UsersAll extends Common
         if ( empty($roles) )
             $roles = $this->user['role'];
 
-        $userRoles = json_decode($roles, true);
+        $userRoles = json_decode($roles, true)??[];
         $allRoles = $this->getAllRoles();
         
         foreach( $allRoles as &$singRole )
@@ -291,7 +295,7 @@ class UsersAll extends Common
 
         if ( $this->hasPermission($permid) ) return false;
 
-        $oldUP = json_decode($thisuser->permissions,true);
+        $oldUP = json_decode($thisuser->permissions,true)??[];
         $oldUP[] = $permid;
 
         $thisuser->permissions = json_encode($oldUP);
@@ -302,7 +306,7 @@ class UsersAll extends Common
         $thisuser = $this->applyRightPrepare( $permid );
         if ( $thisuser === false ) return false;
         if ( !$this->hasPermission($permid) ) return false;
-        $oldUP = json_decode($thisuser->permissions,true);
+        $oldUP = json_decode($thisuser->permissions,true)??[];
         foreach ( $oldUP as $key => $upID )
         {
             if ( $upID === $permid )

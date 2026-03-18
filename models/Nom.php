@@ -10,42 +10,19 @@ use yii\db\ActiveQuery;
 
 class Nom extends Common
 {
-    protected array $gems;
+    protected array $projects;
 
     public function getModelTypes() : array
     {
          return Service_data::find()->where(['tab' => 'model_type'])->asArray()->all();
     }
 
-    public function getGems( string $tab ) : array
+    public function getProjects( string $tab ) : array
     {
-        if ( isset($this->gems) ) {
-            $gems = $this->gems;
+        if ( isset($this->projects) && is_array($this->projects) && !empty($this->projects) ) {
+            return $this->projects;
         } else {
-            $tabs = ['gems_color','gems_cut','gems_names','gems_sizes'];
-            //$gems = $this->gems = Service_data::find()->where(['in','tab', $tabs])->asArray()->all();    
-        }
-
-        //debug($gems,'$gems',1);
-
-        switch ( $tab )
-        {
-            case "color":
-                return Service_data::find()->where(['tab' => 'gems_color'])->asArray()->all();    
-                //return $gems['gems_color'];
-            break;
-            case "cut":
-                return Service_data::find()->where(['tab' => 'gems_cut'])->asArray()->all();    
-                //return $gems['gems_cut'];
-            break;
-            case "names":
-                return Service_data::find()->where(['tab' => 'gems_names'])->asArray()->all();
-                //return $gems['gems_names'];
-            break;
-            case "sizes":
-                return Service_data::find()->where(['tab' => 'gems_sizes'])->asArray()->all();
-                //return $gems['gems_sizes'];
-            break;
+            return $this->projects = Service_data::find()->where(['tab' => 'project'])->asArray()->all(); 
         }
     }
     

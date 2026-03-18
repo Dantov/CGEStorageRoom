@@ -150,7 +150,7 @@ class Auth extends Common
 
         $session->set('positionsCount',27);
         $session->set('SelectByClients',[]);
-        $session->set('SelectByClient','Все');
+        $session->set('SelectByClient','All');
         $session->set('searchFor', '');
         $session->set('selectByHashtag', '');
         $session->set('selectByHashtags', []);

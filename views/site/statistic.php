@@ -8,7 +8,7 @@ use yii\helpers\Html;
 use app\models\User;
 
 $name = User::getFIO();
-$this->title = $name . ' Statistic';
+$this->title = 'CGE:: ' .$name . ' Statistic';
 ?>
 <div class="site-error">
 

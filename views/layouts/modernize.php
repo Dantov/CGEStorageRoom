@@ -25,9 +25,6 @@ $totC = '';
 if (isset($controller->totalCount))
     $totC = '('.$controller->totalCount.')';
 
-//$addClName = (count($session->get('SelectByClients')) > 1) ? "..." : $session->get('SelectByClient');
-//$showClname = isset($controller->clientHidedName)?$controller->clientHidedName:$addClName;
-
 
 $matSelectedCheck = (bool)($session->get('selectByMatMetal') || $session->get('selectByMatColor') || $session->get('selectByMatProbe'));
 
@@ -63,28 +60,30 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
     <nav id="sidebar">
         <div class="sidebar-header text-center">
             <h1>
-                <a href="<?=Url::to(['/site'])?>"><img src="/images/Myicon3.png" height="70px" class=""></a>
+                <a href="<?=Url::to(['/site'])?>"><img src="/images/CGEicon2.png" height="70px" class="">
+                    <h5 class="">CGE Storage Room</h5>
+                </a>
             </h1>
         </div>
         <ul class="list-unstyled components">
             <li class="activeSB">
                 <a href="#showSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                     <i class="fas fa-th-large"></i>
-                    База Моделей
+                    Storage Base
                     <i class="fas fa-angle-left fa-pull-right"></i>
                 </a>
                 <ul class="collapse list-unstyled" id="showSubmenu1">
                     <?php if ( User::hasPermission('add_model') ):?>
-                        <li><a href="<?=Url::to(['/site/add'])?>"><i class="far fa-file"></i> Создать модель</a></li>
+                        <li><a href="<?=Url::to(['/site/add'])?>"><i class="far fa-file"></i> Create record</a></li>
                     <?php endif; ?>
-                    <li><a href="<?=Url::to(['/search/select','by'=>'purgeall'])?>"><i class="fas fa-th-large"></i> Отобразить Плиткой</a></li>
-                    <li><a href="<?=Url::to(['/site'])?>"><i class="far fa-edit"></i> Режим выделения</a></li>
-                    <li><a href="<?=Url::to(['/site'])?>"><i class="far fa-file-alt"></i> Записать в PDF</a></li>
+                    <li><a href="<?=Url::to(['/search/select','by'=>'purgeall'])?>"><i class="fas fa-th-large"></i> Show by tiles</a></li>
+                    <li><a href="<?=Url::to(['/site'])?>"><i class="far fa-edit"></i> Select mode</a></li>
+                    <li><a href="<?=Url::to(['/site'])?>"><i class="far fa-file-alt"></i> Export to PDF</a></li>
                     <?php if ( count($nonPublished) ): ?>
                     <li>
                         <?php $nonPubactive = $session->get('SelectByNonPub')?"bg-secondary":"" ?>
                         <a class="<?=$nonPubactive?>" href="<?=Url::to(['/search/select','by'=>'nonpub'])?>">
-                        <i class="fa-solid fa-envelopes-bulk"></i> Не Опубликованные</a>
+                        <i class="fa-solid fa-envelopes-bulk"></i> Non Published</a>
                     </li>
                     <?php endif; ?>
                     <?php if ( User::isAdmin() ): ?>
@@ -98,14 +97,14 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
             <li>
                 <a href="#sortSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                     <i class="far fa-window-restore"></i>
-                    Сортировка
+                    Sort
                     <i class="fas fa-angle-left fa-pull-right"></i>
                 </a>
                 <ul class="collapse list-unstyled" id="sortSubmenu1">
                     <li>
                         <a href="#positionsSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="fas fa-th"></i>
-                            <span>Позиций: <?=$session->get('positionsCount')?></span>
+                            <span>Positions: <?=$session->get('positionsCount')?></span>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="positionsSubmenu1">
@@ -123,11 +122,11 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="#modeltypeSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="fa-solid fa-swatchbook"></i>
-                            По Типу: <?=$session->get('selectByModelType')?$session->get('selectByModelType'):"Нет" ?>
+                            By Type: <?=$session->get('selectByModelType')?$session->get('selectByModelType'):"Clean"?>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="modeltypeSubmenu1">
-                            <li><a href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>123])?>">Нет</a></li>
+                            <li><a href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>123])?>">Clean</a></li>
                             <?php foreach( $allModelTypes as $singleType ): ?>
                                 <li>
                                     <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>$singleType['name']])?>">
@@ -143,15 +142,15 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="#materialsSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="fa-solid fa-ring"></i>
-                            По Материалам: <?=$matSelectedCheck?' <i class="fa-solid fa-check"></i>':"Нет" ?>
+                            By Materials: <?=$matSelectedCheck?' <i class="fa-solid fa-check"></i>':"Clean" ?>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="materialsSubmenu1">
-                            <li><a href="<?= Url::to(['/search/select','by'=>'materials'])?>">Нет</a></li>
+                            <li><a href="<?= Url::to(['/search/select','by'=>'materials'])?>">Clean</a></li>
                             <li>
                                 <a href="#materialsMetalSubmenu1" data-toggle="collapse" aria-expanded="false" class="sidebarMenuA">
                                     &nbsp;&nbsp;<i class="fa-solid fa-boxes-stacked"></i>
-                                    По Металу: <?=$session->get('selectByMatMetal')?$session->get('selectByMatMetal'):"Нет" ?>
+                                    По Металу: <?=$session->get('selectByMatMetal')?$session->get('selectByMatMetal'):"Clean" ?>
                                     <i class="fas fa-angle-left fa-pull-right"></i>
                                 </a>
                                 <ul class="collapse list-unstyled" id="materialsMetalSubmenu1">
@@ -170,7 +169,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                             <li>
                                 <a href="#materialsColorSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                                     &nbsp;&nbsp;<i class="fa-solid fa-palette"></i>
-                                    По Цвету: <?=$session->get('selectByMatColor')?$session->get('selectByMatColor'):"Нет" ?>
+                                    По Цвету: <?=$session->get('selectByMatColor')?$session->get('selectByMatColor'):"Clean" ?>
                                     <i class="fas fa-angle-left fa-pull-right"></i>
                                 </a>
                                 <ul class="collapse list-unstyled" id="materialsColorSubmenu1">
@@ -189,7 +188,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                             <li>
                                 <a href="#materialsProbeSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                                     &nbsp;&nbsp;<i class="fa-solid fa-eye-dropper"></i>
-                                    По Пробе: <?=$session->get('selectByMatProbe')?$session->get('selectByMatProbe'):"Нет" ?>
+                                    По Пробе: <?=$session->get('selectByMatProbe')?$session->get('selectByMatProbe'):"Clean" ?>
                                     <i class="fas fa-angle-left fa-pull-right"></i>
                                 </a>
                                 <ul class="collapse list-unstyled" id="materialsProbeSubmenu1">
@@ -210,11 +209,11 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="#hashtagSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="fa-solid fa-tags"></i>
-                            По Хештегу: <?=$session->get('selectByHashtags')?' <i class="fa-solid fa-check"></i>':"Нет" ?>
+                            By Tag: <?=$session->get('selectByHashtags')?' <i class="fa-solid fa-check"></i>':"Clean" ?>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="hashtagSubmenu1">
-                            <li><a href="<?= Url::to(['/search/select/','by'=>'hashtag','v'=>123])?>">Нет</a></li>
+                            <li><a href="<?= Url::to(['/search/select/','by'=>'hashtag','v'=>123])?>">Clean</a></li>
                             <?php foreach( $allHashtags as $singlehashtag ): ?>
                                 <li>
                                     <a class="pt-2 pb-2" href="<?= Url::to(['/search/select/','by'=>'hashtag','v'=>$singlehashtag['name']])?>">
@@ -230,12 +229,12 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="#bySubmenu" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="far fa-calendar-alt"></i>
-                            По Дате: <?=$session->get('selectFromDate')?$session->get('selectFromDate'):"Нет" ?>
+                            By Date: <?=$session->get('selectFromDate')?$session->get('selectFromDate'):"Clean" ?>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="bySubmenu">
                             <li>
-                                <a href="<?=Url::to(['/search/select/','by'=>'purgedate'])?>">Нет</a>
+                                <a href="<?=Url::to(['/search/select/','by'=>'purgedate'])?>">Clean</a>
                             </li>
                             <li>
                                 <a class="cursorPointer">С &nbsp;&nbsp;<input class="bg-dark text-light" type="date" id="createdatefrom" value="<?=$session->get('selectFromDate')?>"/></a>
@@ -248,15 +247,15 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="#growingSubmenu" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="fas fa-sort-amount-up-alt"></i>
-                            По: <?=($session->get('selectByOrder')===SORT_ASC)?"Самые старые":"Самые новые"?>
+                            By: <?=($session->get('selectByOrder')===SORT_ASC)?"Oldest":"Newest"?>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="growingSubmenu">
                             <li>
-                                <a href="<?=Url::to(['/search/select','by'=>'order','v'=>'ASC'])?>">Самые старые</a>
+                                <a href="<?=Url::to(['/search/select','by'=>'order','v'=>'ASC'])?>">Oldest</a>
                             </li>
                             <li>
-                                <a href="<?=Url::to(['/search/select','by'=>'order','v'=>'DESC'])?>">Самые новые</a>
+                                <a href="<?=Url::to(['/search/select','by'=>'order','v'=>'DESC'])?>">Newest</a>
                             </li>
                         </ul>
                     </li>
@@ -264,35 +263,35 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
             </li>
             <li>
                 <?php if ( User::hasPermission('add_model') ):?>
-                <a href="<?=Url::to(['/site/add'])?>"><i class="far fa-file"></i>Создать модель</a>
+                <a href="<?=Url::to(['/site/add'])?>"><i class="far fa-file"></i>Create record</a>
                 <?php endif;?>
             </li>
             <li>
                 <?php if ( User::hasPermission('nomenclature') ):?>
                     <a href="<?=Url::to(['/site/nomenclature'])?>">
                         <i class="far fa-list-alt"></i>
-                        Номенклатура
+                        Nomenclature
                     </a>
                 <?php endif;?>
             </li>
             <li>
                 <a href="#noticesSubmenu" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
-                    <i class="far fa-bell"></i>Оповещения
+                    <i class="far fa-bell"></i>Notifications
                     <?php if ( count($nonPublished) ): ?>
-                        <span class="badge badge-secondary bg-danger"><?=count($nonPublished)?> Новых</span>
+                        <span class="badge badge-secondary bg-danger"><?=count($nonPublished)?> new</span>
                         <i class="fas fa-angle-left fa-pull-right"></i>
                     <?php endif; ?>
                 </a>
                 <ul class="collapse list-unstyled" id="noticesSubmenu">
                     <li>
-                        <a class="bg-danger publishall" href=""><i class="fa-solid fa-stamp"></i>Опубликовать Все</a>
+                        <a class="bg-danger publishall" href=""><i class="fa-solid fa-stamp"></i>Publish All</a>
                     </li>
                     <?php foreach( $nonPublished as $npModel): ?>
                     <li>
                         <a href="<?=Url::to(['/site/edits','model'=>$npModel['id']])?>" class="p-2 border-bottom border-secondary">
-                            <span>Добавлена новая модель</span><br>
-                            <span>Для <?=htmlentities($npModel['client'])?></span><br>
-                            <span class="text-warning">Не опубликована!</span><br>
+                            <span>New record was added</span><br>
+                            <span>For <?=htmlentities($npModel['client'])?></span><br>
+                            <span class="text-warning">Non Publish!</span><br>
                             <?php if ( empty($npModel['images']) ): ?>
                                 <img src="/pictAssets/web1.webp" width="50px" class="mr-2">
                             <?php else: ?>
@@ -300,7 +299,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 <img src="<?=Url::to('/stock/'.Common::modelPath($npModel['client'],$npModel['id']).'/images/'.$imgname)?>" width="50px" class="mr-2">
                             <?php endif; ?>
                             <span><?=$npModel['number_3d']?></span><br>
-                            <span>Добавил: <?=User::getUsernameByID($npModel['creator_id']). " - " .formatDate($npModel['date'])?></span>
+                            <span>Added by: <?=User::getUsernameByID($npModel['creator_id']). " - " .formatDate($npModel['date'])?></span>
                         </a>
                     </li>
                     <?php endforeach; ?>
@@ -326,20 +325,20 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <div class="pt-1 mx-auto">
                         <div class="input-group input-group-sm align-middle">
                             <div class="input-group-prepend">
-                                <button title="Найдено" class="btn btn-outline-primary border-0"><?=$totC?></button>
-                                <button title="Очистить выборку" id="purge_button" class="btn btn-outline-secondary border-0"><i class="fa-solid fa-broom"></i></button>
-                                <button title="Нажать для поиска" id="search_button" class="btn btn-outline-secondary border-0"><i class="fas fa-search"></i></button>
+                                <button title="Found" class="btn btn-outline-primary border-0"><?=$totC?></button>
+                                <button title="Purge" id="purge_button" class="btn btn-outline-secondary border-0"><i class="fa-solid fa-broom"></i></button>
+                                <button title="push for search" id="search_button" class="btn btn-outline-secondary border-0"><i class="fas fa-search"></i></button>
                             </div>
-                            <input type="text" id="search_row" value="<?=$searchFor?>" type="search" placeholder="Поиск..." aria-label="Search" class="form-control border-top-0 border-left-0 border-right-0">
+                            <input type="text" id="search_row" value="<?=$searchFor?>" type="search" placeholder="Search..." aria-label="Search" class="form-control border-top-0 border-left-0 border-right-0">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary border-0 dropdown-toggle" type="button" title="Где искать" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-outline-secondary border-0 dropdown-toggle" type="button" title="where to find" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-gem"></i>
                                     <span>
                                         <?= $clientName ?>
                                     </span>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">Все</a>
+                                    <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">All Projects</a>
                                     <div class="dropdown-divider"></div>
                                     <?php foreach( $clients as $client ):?>
                                     <?php $clname = User::hasPermission('hideclients')?$client['secondname']:$client['name'] ?>
@@ -348,7 +347,6 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                         <span class="float-right"><i class="fa-solid fa-square-check"></i></span>
                                     <?php endif; ?>
                                     </a>
-
                                     <?php endforeach;?>
                                 </div>
                             </div>
@@ -370,18 +368,18 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 </div>
                             </a>
                             <div class="dropdown-menu drop-3">
-                                <?php $whatinside=User::isAdmin()?JewelStore::getOrdersCount()." заказов внутри":JewelStore::getModelsCount()." моделей внутри"?>
+                                <?php $whatinside=User::isAdmin()?JewelStore::getOrdersCount()." orders inside":JewelStore::getModelsCount()." garbages inside"?>
                                 <div class="profile-r align-self-center">
                                     <h5 class="sub-title-w3-agileits"><small><?=$whatinside?></small></h5>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <?php $uri = User::isAdmin() ? 'showorders' : 'show' ?>
                                 <a href="<?=Url::to(['site/jewel','box'=>$uri])?>" class="dropdown-item mt-2">
-                                    <h4><i class="far fa-gem mr-3"></i>Показать</h4>
+                                    <h4><i class="far fa-gem mr-3"></i>Show</h4>
                                 </a>
                                 <?php if(JewelStore::getModelsCount()): ?>
                                 <a href="<?=Url::to(['site/jewel','box'=>'send'])?>" class="dropdown-item mt-2">
-                                    <h4><i class="fa-regular fa-paper-plane"></i> Отправить Запрос</h4>
+                                    <h4><i class="fa-regular fa-paper-plane"></i> Send Query</h4>
                                 </a>
                                 <?php endif;?>
                             </div>
@@ -405,26 +403,26 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 <div class="dropdown-divider"></div>
                                 <?php if(User::hasPermission('jewelbox')): ?>
                                     <a href="<?=Url::to(['site/jewel','box'=>'show'])?>" class="dropdown-item mt-2">
-                                        <h4><i class="far fa-gem mr-3"></i>Шкатулка</h4>
+                                        <h4><i class="far fa-gem mr-3"></i>Box</h4>
                                     </a>
                                 <?php endif;?>
                                 <?php if(User::hasPermission('profile')): ?>
                                     <a href="<?=Url::to(['site/profile'])?>" class="dropdown-item mt-2">
-                                        <h4><i class="far fa-user mr-3"></i>Профиль</h4>
+                                        <h4><i class="far fa-user mr-3"></i>Profile</h4>
                                     </a>
                                 <?php endif;?>
                                 <?php if(User::hasPermission('options')): ?>
                                     <a href="<?=Url::to(['site/options'])?>" class="dropdown-item mt-2">
-                                        <h4><i class="fas fa-tools mr-3"></i></i>Настройки</h4>
+                                        <h4><i class="fas fa-tools mr-3"></i></i>Options</h4>
                                     </a>
                                 <?php endif;?>
                                 <?php if(User::hasPermission('statistic')): ?>
                                     <a href="<?=Url::to(['site/statistic'])?>" class="dropdown-item mt-2">
-                                        <h4><i class="fas fa-chart-pie mr-3"></i>Статистика</h4>
+                                        <h4><i class="fas fa-chart-pie mr-3"></i>Statistic</h4>
                                     </a>
                                 <?php endif;?>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?=Url::to(['auth/logout'])?>">Выход</a>
+                                <a class="dropdown-item" href="<?=Url::to(['auth/logout'])?>">Exit</a>
                             </div>
                         </li>
                     </ul>
@@ -452,13 +450,13 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 <td class="mjb-mtype"></td>
                                 <td class="mjb-client"></td>
                                 <td>
-                                    <a class="mjb-link btn btn-success btn-sm" href="" role="button">Перейти</a>
+                                    <a class="mjb-link btn btn-success btn-sm" href="" role="button">Go</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="4" class="mb-0 pb-0">
                                     <div class="form-group">
-                                        <label for="commenttext">Комментарий</label>
+                                        <label for="commenttext">Comment</label>
                                         <textarea class="form-control" id="mjb-commenttext" rows="2"></textarea>
                                     </div>
                                 </td>
@@ -468,8 +466,8 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button type="button" id="mjb-submit" class="btn btn-primary">Сохранить</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="mjb-submit" class="btn btn-primary">Save</button>
               </div>
             </div>
           </div>
@@ -479,20 +477,20 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
             <?php if ($controller->isMobile): ?>
             <div class="input-group input-group-sm align-middle">
                 <div class="input-group-prepend">
-                    <button title="Найдено" class="btn btn-outline-primary border-0"><?=$totC?></button>
-                    <button title="Очистить выборку" id="purge_button" class="btn btn-outline-secondary border-0"><i class="fa-solid fa-broom"></i></button>
-                    <button title="Нажать для поиска" id="search_button" class="btn btn-outline-secondary border-0"><i class="fas fa-search"></i></button>
+                    <button title="Found" class="btn btn-outline-primary border-0"><?=$totC?></button>
+                    <button title="Purge Query" id="purge_button" class="btn btn-outline-secondary border-0"><i class="fa-solid fa-broom"></i></button>
+                    <button title="Push for search" id="search_button" class="btn btn-outline-secondary border-0"><i class="fas fa-search"></i></button>
                 </div>
-                <input type="text" id="search_row" value="<?=$searchFor?>" type="search" placeholder="Поиск..." aria-label="Search" class="form-control border-top-0 border-left-0 border-right-0">
+                <input type="text" id="search_row" value="<?=$searchFor?>" type="search" placeholder="Search..." aria-label="Search" class="form-control border-top-0 border-left-0 border-right-0">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary border-0 dropdown-toggle" type="button" title="Где искать" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-outline-secondary border-0 dropdown-toggle" type="button" title="where to search" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-gem"></i>
                         <span>
                             <?php //$showClname ?>
                         </span>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">Все</a>
+                        <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">All Projects</a>
                         <div class="dropdown-divider"></div>
                         <?php foreach( $clients as $client ):?>
                         <?php $clname = User::hasPermission('hideclients')?$client['secondname']:$client['name'] ?>
@@ -508,7 +506,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
         <!-- Copyright -->
         <div class="copyright-w3layouts shadow pt-2 pb-2 mt-2 text-center" style="bottom: 0 !important;" id="footer">
             <p class="float-left ml-3"><small>Developed by Vadym Bykov</small></p>
-            <p class="float-right mr-3"> ver 3.0.2 beta</p>
+            <p class="float-right mr-3"> ver 0.0.1 alpha</p>
             <div class="clearfix"></div>
         </div>
         <!--// Copyright -->

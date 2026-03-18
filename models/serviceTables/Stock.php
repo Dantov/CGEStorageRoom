@@ -52,19 +52,16 @@ class Stock extends ActiveRecord
         return $this->hasMany(D3_files::className(),['pos_id'=>'id']);
     }
 
-
     public function scenarios()
     {
         $columns = [
             'id',
-            'number_3d',
-            'client',
-            'modeller3d',
-            'model_type',
-            'size_range',
-            'print_cost',
-            'model_cost',
-            'model_weight',
+            'item_name',
+            'item_category',
+            'item_size',
+            'item_price',
+            'item_price_rent',
+            'project',
             'description',
             'hashtags',
             'model_status',
@@ -82,15 +79,13 @@ class Stock extends ActiveRecord
     public function attributeLabels()
     {
         return [
-             'number_3d'=> '№3D',
-             'model_type'=> 'Тип Модели',
-             'client'=> 'Заказчик',
-             'modeller3D'=> '3Д Модельер',
-             'model_weight'=> 'Вес Изделия',
-             'model_cost' => 'Стоимость Модели',
+             'item_name'=> '№3D',
+             'item_category'=> 'Тип Модели',
+             'project'=> 'Project',
+             'item_size'=> 'Вес Изделия',
+             'item_price' => 'Стоимость Модели',
+             'item_price_rent' => 'Стоимость Модели',
              'description'=> 'Примечания',
-             'print_cost'=> 'Стоимость печати',
-             'creator_name'=> 'Кто создал',
              'hashtags' => 'Теги для поиска',
              'date'=> 'Дата создания',
         ];
@@ -101,39 +96,14 @@ class Stock extends ActiveRecord
         return [
             [
                 [
-                    'number_3d',
-                    'modeller3d',
-                    'model_type',
-                    'model_weight',
+                    'item_name',
+                    'item_category',
+                    'project',
+                    'description',
                 ],
                 'required',
                 'message' => 'Это поле нужно заполнить!'
             ],
-            //rule2
-            ['model_material', function ($attribute, $params) {
-                // т.к. прототип строк тоже содержит атрибуты name и они находятся в форме
-                // то приходят пустые строки
-                $data = $this->$attribute;
-                if ( !is_array($data) || empty($data) ) $this->addError($attribute, 'Нужно внести хоть один материал!');
-
-                $materials = [];
-                foreach ( $data as $mats )
-                {
-                    for( $i = 0; $i < count($mats); $i++ )
-                    {
-                        $materials[$i][] = $mats[$i];
-                    }
-                }
-                // если хоть один инпут заполнен - считаем что строку можно вносить в БД
-                foreach ( $materials as $material )
-                {
-                    foreach ( $material as $mat )
-                    {
-                        if ( !empty($mat) ) return;
-                    }
-                }
-                $this->addError($attribute, 'Нужно внести хоть один материал!');
-            }],
             //rule3
             [
                 [
@@ -158,13 +128,6 @@ class Stock extends ActiveRecord
                 ],
                 'trim',
             ],
-            //rule5
-            ['model_weight', 'number'],
-            //rule6
-            ['model_weight', function ($attribute, $params) {
-                $data = $this->$attribute;
-                if ( $data < 0 ) $this->addError($attribute, 'Вес должен быть положительным!');
-            }],
         ];
     }
 

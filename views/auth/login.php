@@ -38,10 +38,10 @@ $session = yii::$app->session;
             <button type="submit" name="submit" class="btn btn-primary error-w3l-btn mt-sm-5 mt-3 px-4">Login</button>
         </form>
         <p class="paragraph-agileits-w3layouts mt-4">Don't have an account?
-            <a href="">Then you don't need it</a>
+            <a href="">Then contact with administrator please.</a>
         </p>
         <h1 class="paragraph-agileits-w3layouts mt-2">
-            <a href="<?=Url::to(['site/','main'=>''])?>">Back to Internet</a>
+            <a href="<?=Url::to(['/google.com/'])?>">Back to Internet</a>
         </h1>
     </div>
 

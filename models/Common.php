@@ -92,7 +92,7 @@ class Common
 		$selectedClients = $session->get('SelectByClients')??[];
 		$howManyClients = count($selectedClients);
 
-		if ( empty($howManyClients) ) return 'Все';
+		if ( empty($howManyClients) ) return 'All';
 		if ( $howManyClients > 1 ) return ' ..... ';
 
 		if ( $howManyClients == 1 ) {

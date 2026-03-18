@@ -46,6 +46,7 @@ class GeneralController extends Controller
 
     public function beforeAction($action)
     {
+        $this->view->title = "CGE::Storage Room";
         //HTTP_REFERER
         if ( !$this->accessControl() ) 
 		  return $this->redirect(['/auth'])->send();
