@@ -48,9 +48,9 @@ class AddEdit extends ModelView
         if ( !$stock->exists() )
             return [];
         
-        $this->stock = $stock->with(['materials','gems','images','d3_files'])->asArray()->limit(1)->one();
+        $this->stock = $stock->with(['images'])->asArray()->limit(1)->one();
 
-        $this->dataFilesPrepare();
+        //$this->dataFilesPrepare();
         $this->addPreviewImages();
         return $this->stock;
     }
@@ -58,18 +58,8 @@ class AddEdit extends ModelView
 	public function getDataTables()
     {
 		$tabs = [
-            'modeller3d',
-            'model_type',
-            'model_material',
-            'model_covering',
-            'handling',
-            'metal_color',
-            'vc_names',
-            'gems_color',
-            'gems_cut',
-            'gems_names',
-            'gems_sizes',
-            'metal_probe',
+            'category',
+            'project',
             'hashtag',
         ];
 		$tables = [];
@@ -84,7 +74,7 @@ class AddEdit extends ModelView
             }
 		}
 
-        $tables['client'] = $this->getClients();
+        $tables['project'] = $this->getProjects();
 
 		return $tables;
 	}

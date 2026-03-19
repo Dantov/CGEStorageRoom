@@ -6,7 +6,7 @@ use Yii;
 
 class Common
 {
-	public static array $clients;
+	public static array $projects;
 	public static array $roles;
 	public static array $userData;
 	public static $instance;
@@ -36,14 +36,14 @@ class Common
     	if ( $id < 1 || $id > PHP_INT_MAX ) return [];
 
     	$user = Users::find()
-    		->select(['name','lastname','thirdname','fio','fullFio','role','clients','permissions','email','about','access'])
+    		->select(['name','lastname','thirdname','fio','fullFio','role','projects','permissions','email','about','access'])
     		->where(['id' => $id]);
     	if ( !$user->exists() ) return [];
 
     	$user = $user->asArray()->one();
 
     	$user['role'] = json_decode($user['role'],true);
-    	$user['clients'] = json_decode($user['clients'],true);
+    	$user['projects'] = json_decode($user['projects'],true);
     	$user['permissions'] = json_decode($user['permissions'],true);
 
     	return self::$userData = $user;
@@ -71,25 +71,30 @@ class Common
         return round( $sizeByte / $measureTypes[$measure], $precision );    
 	}
 
-	public function getClients() : array
+	public function getProjects() : array
 	{
-		self::$clients = Service_data::find()->where(['tab'=>'client'])->asArray()->orderBy('name')->all();
+		self::$projects = Service_data::find()->where(['tab'=>'project'])->asArray()->orderBy('name')->all();
 
 		if ( User::hasPermission('clientall') )
-			return self::$clients;
+			return self::$projects;
 
 		if ( User::hasPermission('clientonly') )
 		{
-			$ids = User::getClientsID( self::$clients );
-			return self::$clients = Service_data::find()->where(['tab'=>'client'])->andWhere(['in','id',$ids])->asArray()->orderBy('name')->all();
+			$ids = User::getProjectsID( self::$projects );
+			return self::$projects = Service_data::find()
+				->where(['tab'=>'project'])
+				->andWhere(['in','id',$ids])
+				->asArray()
+				->orderBy('name')
+				->all();
 		}
 		return [];
 	}
 
-	public function getClientName() : string
+	public function getProjectName() : string
 	{
 		$session = Yii::$app->session;
-		$selectedClients = $session->get('SelectByClients')??[];
+		$selectedClients = $session->get('SelectByProjects')??[];
 		$howManyClients = count($selectedClients);
 
 		if ( empty($howManyClients) ) return 'All';
@@ -106,7 +111,6 @@ class Common
 						return $clientTmpl['secondname'];
 					}
 				}
-
 			} else {
 				return $unhidedName;
 			}
@@ -126,11 +130,12 @@ class Common
 		return Service_data::find()->where(['tab'=>'hashtag'])->asArray()->orderBy('name')->all();
 	}
 
-	public function getAllModelTypes() : array
+	public function getAllCategories() : array
 	{
-		return Service_data::find()->where(['tab'=>'model_type'])->asArray()->orderBy('name')->all();
+		return Service_data::find()->where(['tab'=>'category'])->asArray()->orderBy('name')->all();
 	}
 
+	/*
 	public function getAllMaterials() : array
 	{
 		$mats = Service_data::find()->where(['in','tab',['metal_color','model_material','metal_probe']])->asArray()->orderBy('name')->all();
@@ -143,14 +148,15 @@ class Common
 		}
 		return $res;
 	}
+	*/
 
 	public function getNonPublished()
 	{
 		$stock = Stock::find();
 		if ( User::hasPermission('edit_all_models') ) {
-			$stock = $stock->andWhere(['model_status' => 0]);
+			$stock = $stock->andWhere(['item_status' => 0]);
 		} elseif ( User::hasPermission('edit_own_models') ) {
-			$stock->andWhere(['model_status' => 0])
+			$stock->andWhere(['item_status' => 0])
 				  ->andWhere(['creator_id' => User::getID() ]);
 		} else {
 			return [];
@@ -168,7 +174,7 @@ class Common
         		continue;
         	}
 
-        	$modelPath = Common::modelPath($model['client'],$model['id']);
+        	$modelPath = Common::modelPath($model['project'],$model['id']);
 
         	$found = false;
             foreach ( $model['images'] as $image )
@@ -201,7 +207,7 @@ class Common
         }
 
         if ( User::hasPermission('hideclients') )
-            $this->hideClientsName($stock);
+            $this->hideProjectsName($stock);
 
         return $stock;
 	}
@@ -245,29 +251,29 @@ class Common
     {
     	return substr(sha1($client_ID_or_Name), self::SubstrClient_FROM, self::SubstrClient_LEN);
     }
-    public static function clientPath( mixed $clientid ) : string
+    public static function clientPath( mixed $projectid ) : string
     {
     	$common = Common::instance();
-    	if ( is_int($clientid) )
-    		return $common->getClientHash($clientid);
+    	if ( is_int($projectid) )
+    		return $common->getClientHash($projectid);
 
-    	if ( is_string($clientid) )
+    	if ( is_string($projectid) )
     	{
-    		$clientName = $clientid;
+    		$clientName = $projectid;
     		
-    		foreach ($common->getClients() as $client) 
+    		foreach ($common->getProjects() as $project) 
             {
-                if ( ($clientName == $client['name']) || $clientName == $client['secondname'] )
-                	return $common->getClientHash($client['id']);
+                if ( ($clientName == $project['name']) || $clientName == $project['secondname'] )
+                	return $common->getClientHash($project['id']);
             }     
     	}
     	return '';
     }
 
-    public static function modelPath( mixed $clientid, int $modelid ) : string
+    public static function modelPath( mixed $projectid, int $modelid ) : string
     {
-    	if ( empty($clientid) || empty($modelid) ) return '';
-    	$clPath = self::clientPath($clientid);
+    	if ( empty($projectid) || empty($modelid) ) return '';
+    	$clPath = self::clientPath($projectid);
     	if ( empty($clPath) ) return '';
 
     	return $clPath ."/". substr(sha1($modelid), self::SubstrID_FROM, self::SubstrID_LEN);

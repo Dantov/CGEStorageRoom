@@ -26,6 +26,8 @@ class Stock extends ActiveRecord
         */
         return $this->hasMany(Images::className(),['pos_id'=>'id']);
     }
+    
+    /*
     public function getMaterials()
     {
         $session = Yii::$app->session;
@@ -46,11 +48,11 @@ class Stock extends ActiveRecord
         }
         return $this->hasMany(Gems::className(),['pos_id'=>'id']);
     }
-
     public function getD3_files()
     {
         return $this->hasMany(D3_files::className(),['pos_id'=>'id']);
     }
+    */
 
     public function scenarios()
     {
@@ -58,13 +60,15 @@ class Stock extends ActiveRecord
             'id',
             'item_name',
             'item_category',
+            'item_quantity',
             'item_size',
             'item_price',
             'item_price_rent',
+            'insurance',
             'project',
             'description',
             'hashtags',
-            'model_status',
+            'item_status',
             'date',
             'create_date',
             'creator_id',

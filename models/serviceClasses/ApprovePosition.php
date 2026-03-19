@@ -23,10 +23,10 @@ class ApprovePosition extends SaveModel
         $stock = Stock::find();
         if ( User::hasPermission('edit_all_models') ) 
         {
-            $stock = $stock->andWhere(['model_status'=>0]);
+            $stock = $stock->andWhere(['item_status'=>0]);
         } elseif ( User::hasPermission('edit_own_models') ) {
             // only self models
-            $stock = $stock->andWhere(['model_status'=>0])
+            $stock = $stock->andWhere(['item_status'=>0])
                 ->andWhere(['creator_id'=>User::getID()]);
         } else {
             return 'false';    
@@ -36,13 +36,13 @@ class ApprovePosition extends SaveModel
         $res = [];
         foreach( $stock->each() as $model ) 
         {
-            if (empty($model->client)) continue;
-            if (empty($model->model_type)) continue;
+            if (empty($model->project)) continue;
+            if (empty($model->item_category)) continue;
 
-            $matRows = Materials::find()->where(['pos_id'=>$model->id]);
-            if ( !$matRows->exists() ) continue;
+            //$matRows = Materials::find()->where(['pos_id'=>$model->id]);
+            //if ( !$matRows->exists() ) continue;
 
-            $model->model_status = 1;
+            $model->item_status = 1;
             $res[$model->id] = $model->save(false);
         }
         return 'true';
@@ -54,13 +54,13 @@ class ApprovePosition extends SaveModel
         if ( !$model->exists() ) return '';
         $model = $model->one();
 
-        if (empty($model->client)) return '';
-        if (empty($model->model_type)) return '';
+        if (empty($model->project)) return '';
+        if (empty($model->item_category)) return '';
 
-        $matRows = Materials::find()->where(['pos_id'=>$model->id]);
-        if ( !$matRows->exists() ) return '';
+        //$matRows = Materials::find()->where(['pos_id'=>$model->id]);
+        //if ( !$matRows->exists() ) return '';
 
-        $model->model_status = 1;
+        $model->item_status = 1;
         if ( $model->save(false) )
             return 'publish';
 
@@ -82,7 +82,7 @@ class ApprovePosition extends SaveModel
         $newPos->attributes = $stock->attributes;
         $newPos->id = null;
         $newPos->description = $newPos->description . " CLONED!";
-        $newPos->model_status = 0;
+        $newPos->item_status = 0;
         $newPos->date = date('Y-m-d');
 
         $newPos->isNewRecord = true;
@@ -92,11 +92,10 @@ class ApprovePosition extends SaveModel
         {
             $newid = $newPos->getPrimaryKey();
 
-            $resp['gems_cloned'] = $this->cloneLinkedTable( 'gems', $newid);
-            $resp['mats_cloned'] = $this->cloneLinkedTable( 'mats', $newid);
+            //$resp['gems_cloned'] = $this->cloneLinkedTable( 'gems', $newid);
+            //$resp['mats_cloned'] = $this->cloneLinkedTable( 'mats', $newid);
 
-            if ( $resp['gems_cloned'] && $resp['mats_cloned'] )
-                $resp['result'] = true;
+            //if ( $resp['gems_cloned'] && $resp['mats_cloned'] )$resp['result'] = true;
             
             $resp['newid'] = $newid;
             Yii::$app->session->setFlash('cloned','Модель клонирована успешно!');
@@ -141,8 +140,8 @@ class ApprovePosition extends SaveModel
 
     public function excludeModel()
     {
-        $stock = Stock::find()->select(['id','model_status'])->where(['id'=>$this->modelID])->one();
-        $stock->model_status = 0;
+        $stock = Stock::find()->select(['id','item_status'])->where(['id'=>$this->modelID])->one();
+        $stock->item_status = 0;
 
         if ( $stock->save(false) )
             return 'exclude';
@@ -150,8 +149,8 @@ class ApprovePosition extends SaveModel
     }
     public function deleteModel()
     {
-        $stock = Stock::find()->select(['id','model_status'])->where(['id'=>$this->modelID])->one();
-        $stock->model_status = 2;
+        $stock = Stock::find()->select(['id','item_status'])->where(['id'=>$this->modelID])->one();
+        $stock->item_status = 2;
 
         if ( $stock->save(false) )
             return 'delete';
@@ -160,8 +159,8 @@ class ApprovePosition extends SaveModel
 
     public function restorePosition() : string
     {
-        $stock = Stock::find()->select(['id','model_status'])->where(['id'=>$this->modelID])->one();
-        $stock->model_status = 0;
+        $stock = Stock::find()->select(['id','item_status'])->where(['id'=>$this->modelID])->one();
+        $stock->item_status = 0;
 
         if ( $stock->save(false) )
             return 'restored';
@@ -173,9 +172,9 @@ class ApprovePosition extends SaveModel
      */
     public function deleteModelFull() : array
     {
-        $stock = Stock::find()->select(['id','model_status','client'])
+        $stock = Stock::find()->select(['id','item_status','client'])
         ->where(['id'=>$this->modelID])
-        ->andWhere(['model_status'=>2])
+        ->andWhere(['item_status'=>2])
         ->one();
         $result = ['gems'=>false,'materials'=>false,'images'=>false,'data'=>false,'files'=>false];
         $clientName = $stock->client;

@@ -2,12 +2,10 @@
 
 function Validator() 
 {
-    this.number_3d = document.getElementById('number_3d');
-    this.modeller3d = document.getElementById('modeller3d');
-    this.model_type = document.getElementById('model_type');
-    this.model_weight = document.getElementById('model_weight');
-    this.client = document.getElementById('client');
-    this.material_rows = document.getElementById('tableAllMats').querySelectorAll('.form-row');
+    this.item_name = document.getElementById('item_name');
+    this.project = document.getElementById('project');
+    this.item_category = document.getElementById('item_category');
+    this.item_quantity = document.getElementById('item_quantity');
     this.picts = document.getElementById('picts').querySelectorAll('.mainCard');
 
     this.fields = {};
@@ -19,29 +17,24 @@ Validator.prototype.init = function()
 {
     let self = this;
     this.fields = {
-        number3d : {
-            input : self.number_3d,
-            text : 'Номер 3D модели',
+        item_name : {
+            input : self.item_name,
+            text : 'Item Name',
             valid : false,
         },
-        modeller3d : {
-            input : self.modeller3d,
-            text : '3D моделлера',
+        project : {
+            input : self.project,
+            text : 'Project',
             valid : false,
         },
-        model_type : {
-            input : self.model_type,
-            text : 'Тип модели',
+        item_category : {
+            input : self.item_category,
+            text : 'Item Category',
             valid : false,
         },
-        model_weight : {
-            input : self.model_weight,
-            text : 'Вес модели',
-            valid : false,
-        },
-        client : {
-            input : self.client,
-            text : 'Заказчика',
+        item_quantity : {
+            input : self.item_quantity,
+            text : 'Item Quantity',
             valid : false,
         },
     }
@@ -79,17 +72,8 @@ Validator.prototype.validate_field = function( field )
     {
         //debug(field, 'validate_field');
         field.input.scrollIntoView();
-        AR.warning('Нужно указать '+ field.text + '!',0);
+        AR.warning('You have to specify '+ field.text + '!',0);
         return field.valid = false;
-    }
-    if ( field.input === this.model_weight )
-    {
-        if ( field.input.value <= 0 || field.input.value > 2000 )
-        {
-            field.input.scrollIntoView();
-            AR.warning('Вес модели указан не верно!',0);
-            return field.valid = false;
-        }
     }
     
     debug(field.text,'true');
@@ -102,29 +86,8 @@ Validator.prototype.validate_Picts = function()
     if ( !this.picts.length )
     {
         document.getElementById('picts').scrollIntoView();
-        AR.warning('Нужно внести хоть одну картинку!',0);
+        AR.warning('You need to upload atleast one picture',0);
         return false;  
     }
-    return true;
-};
-Validator.prototype.validate_Material = function()
-{
-    this.material_rows = document.getElementById('tableAllMats').querySelectorAll('.form-row');
-    if ( !this.material_rows.length )
-    {
-        document.getElementById('tableAllMats').scrollIntoView();
-        AR.warning('Нужно внести, как минимум, один материал изделия!',0);
-        return false;
-    }
-    this.material_rows.forEach(row=>{
-        let inputs = row.querySelectorAll('input');
-        inputs.forEach(input=>{
-            if ( !input.value ) {
-                input.scrollIntoView();
-                AR.warning('Все поля материала должны быть заполнены!',0);
-                return false;
-            }
-        });
-    });
     return true;
 };

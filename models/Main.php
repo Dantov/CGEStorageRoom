@@ -23,40 +23,25 @@ class Main extends Common
         $this->stockQuery = Stock::find();
     }
 
-    protected function addByClient()
+    protected function addByProjects()
     {
         $session = Yii::$app->session;
-        $clients =[];
-        foreach ( self::$clients as $cl )
-            $clients[] = $cl['name'];
-
-        if ( User::hasPermission('clientonly') && !User::hasPermission('clientall') ) {
-            return $this->stockQuery->andWhere(['in', 'client', $clients]);
-        }
-
-        if ( $session->get('SelectByClient') !== 'All' )
-            return $this->stockQuery->andWhere(['client' => $session->get('SelectByClient') ]);
-    }
-
-    protected function addByClients()
-    {
-        $session = Yii::$app->session;
-        $chosenClients = $session->get('SelectByClients');
+        $chosenClients = $session->get('SelectByProjects');
 
         if ( User::hasPermission('clientonly') && !User::hasPermission('clientall') ) 
         {
             $selfClients = [];
-            foreach ( self::$clients as $cl )
+            foreach ( self::$projects as $cl )
                 $selfClients[] = $cl['name'];
 
             if ( !empty($chosenClients) )
                 $selfClients = $chosenClients;
 
-            return $this->stockQuery->andWhere(['in', 'client', $selfClients]);
+            return $this->stockQuery->andWhere(['in', 'project', $selfClients]);
         }
         
         if ( !empty($chosenClients) )
-            return $this->stockQuery->andWhere(['in', 'client', $chosenClients]);
+            return $this->stockQuery->andWhere(['in', 'project', $chosenClients]);
     }
     
     protected function addSearch()
@@ -66,7 +51,7 @@ class Main extends Common
         if ( empty($searchFor) ) return;
 
         $this->stockQuery
-            ->andWhere('number_3d LIKE :search OR client LIKE :search OR modeller3d LIKE :search OR model_type LIKE :search OR description LIKE :search OR hashtags LIKE :search')
+            ->andWhere('item_name LIKE :search OR project LIKE :search OR item_category LIKE :search OR description LIKE :search OR hashtags LIKE :search')
             ->addParams([':search' => "%$searchFor%"]);
     }
     
@@ -79,28 +64,28 @@ class Main extends Common
         // Normal Mode
         if ( empty($byNonPub) && empty($byDeleted) ) 
         {
-            $this->stockQuery->andWhere(['model_status' => 1]);
+            $this->stockQuery->andWhere(['item_status' => 1]);
             return;
         }
 
         //Non Published Mode
         if ( !empty($byNonPub) ) 
-            $this->stockQuery->andWhere(['model_status' => 0]);
+            $this->stockQuery->andWhere(['item_status' => 0]);
 
         //Deleted Mode
         if ( !empty($byDeleted) ) 
-            $this->stockQuery->andWhere(['model_status' => 2]); 
+            $this->stockQuery->andWhere(['item_status' => 2]); 
     }
 
-    protected function addModelType()
+    protected function addByCategory()
     {
         $session = Yii::$app->session;
-        $selectByModelType = $session->get('selectByModelType');
+        $selectByModelType = $session->get('selectByCategory');
         if ( empty($selectByModelType) ) return;
 
             $this->stockQuery
-                ->andWhere('model_type LIKE :modeltype')
-                ->addParams([':modeltype' => "%$selectByModelType%"]);
+                ->andWhere('model_type LIKE :item_category')
+                ->addParams([':item_category' => "%$selectByModelType%"]);
     }
 
     protected function addByHashtag()
@@ -194,15 +179,14 @@ class Main extends Common
 
         $this->startStockQuery();
        
-        //$this->addByClient();
-        $this->addByClients();
+        $this->addByProjects();
         if ( $session->has('searchFor') ) $this->addSearch();
         $this->addByHashtags();
-        $this->addModelType();
+        $this->addByCategory();
         $this->addFromDate();
         $this->addToDate();
         $this->addOrderBy();
-        $this->addMaterials();
+    
         $this->addNonPublishedAndDeleted();
         
         $this->stockQuery->with(['images']);
@@ -272,7 +256,7 @@ class Main extends Common
                 $model['mainimage'] = $randomimg['name'];
             }
 
-            if ( $prevImgName = $this->addPreviewImages( $model['mainimage'], $model['id'], $model['client'] ) )
+            if ( $prevImgName = $this->addPreviewImages( $model['mainimage'], $model['id'], $model['project'] ) )
                 $model['mainimgprev'] = $prevImgName;
         }
     }
@@ -299,15 +283,15 @@ class Main extends Common
         return "";
     }
 
-    protected function hideClientsName( array &$stock )
+    protected function hideProjectsName( array &$stock )
     {
-        $allClients = $this->getClients();
+        $allClients = $this->getProjects();
         foreach ( $stock as &$model )
         {
             foreach ( $allClients as $clientTmpl )
             {
-                if ( $model['client'] == $clientTmpl['name'] ){
-                    $model['client'] = $clientTmpl['secondname'];
+                if ( $model['project'] == $clientTmpl['name'] ){
+                    $model['project'] = $clientTmpl['secondname'];
                     break;
                 }
             }

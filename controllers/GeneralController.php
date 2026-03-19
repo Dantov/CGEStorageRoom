@@ -31,13 +31,13 @@ class GeneralController extends Controller
     protected $stockDir;
 
     public array $user;
-    public array $clients;
+    public array $projects;
     public array $hashtags;
-    public array $modelTypes;
-    public array $modelMaterials;
+    public array $categories;
+    //public array $modelMaterials;
     public array $nonPublished;
     public string $clientHidedName;
-    public string $clientName;
+    public string $projectName;
     public int $totalCount;
     
     public $status_arr = [];
@@ -63,12 +63,12 @@ class GeneralController extends Controller
 JS;
         try {
             $m = new Main();
-            $this->clients = $m->getClients();
+            $this->projects = $m->getProjects();
             $this->hashtags = $m->getAllHashtags();
-            $this->modelTypes = $m->getAllModelTypes();
-            $this->modelMaterials = $m->getAllMaterials();
+            $this->categories = $m->getAllCategories();
+            //$this->modelMaterials = $m->getAllMaterials();
             $this->nonPublished = $m->getNonPublished();
-            $this->clientName = $m->getClientName();
+            $this->projectName = $m->getProjectName();
         } catch (e) {
             return $this->redirect(['/auth'])->send();
         }

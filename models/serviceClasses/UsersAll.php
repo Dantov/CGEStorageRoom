@@ -138,21 +138,21 @@ class UsersAll extends Common
 
         return $permittedFieldAll;
     }
-    public function getClients() : array
+    public function getProjectss() : array
     {
-        $clients = Service_data::find()->where(['tab'=>'client'])->asArray()->orderBy('name')->all();
-        $userClients = json_decode($this->user['clients'],true)??[];
-        foreach( $clients as &$sClient )
+        $projects = Service_data::find()->where(['tab'=>'project'])->asArray()->orderBy('name')->all();
+        $userProjects = json_decode($this->user['projects'],true)??[];
+        foreach( $projects as &$sClient )
             $sClient['active'] = 0;
 
-        foreach( $userClients as $userClientID )
+        foreach( $userProjects as $userClientID )
         {
-            foreach( $clients as &$client )
+            foreach( $projects as &$client )
                 if ( (int)$client['id'] === (int)$userClientID ) 
                     $client['active'] = 1;
         }
 
-        return $clients;
+        return $projects;
     }
     
     /*

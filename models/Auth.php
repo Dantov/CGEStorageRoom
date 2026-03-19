@@ -149,12 +149,12 @@ class Auth extends Common
         $session->set('AppVersionAccess',$this->getAppVersionAccess() );
 
         $session->set('positionsCount',27);
-        $session->set('SelectByClients',[]);
-        $session->set('SelectByClient','All');
+        $session->set('SelectByProjects',[]);
+        $session->set('SelectByProject','All');
         $session->set('searchFor', '');
         $session->set('selectByHashtag', '');
         $session->set('selectByHashtags', []);
-        $session->set('selectByModelType', '');
+        $session->set('selectByCategory', '');
         
         $session->set('selectFromDate','');
         $session->set('selectToDate','');

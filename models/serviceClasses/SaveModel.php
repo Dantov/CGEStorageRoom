@@ -32,18 +32,15 @@ class SaveModel extends Common
         $date = date("Y-m-d");
 
         $stock = new Stock();
-        $stock->number_3d = '001';
-        $stock->modeller3d = 'Быков В.А.';
-        $stock->client = '';
-        $stock->print_cost = '';
-        $stock->model_cost = '';
-        $stock->size_range = '';
-        $stock->model_weight = '';
+        $stock->item_category = '';
+        $stock->item_size = '';
+        $stock->item_price = '';
         $stock->description = '';
         $stock->hashtags = '';
         $stock->date = $date;
         $stock->create_date = $date;
         $stock->creator_id = User::getID();
+
         $res = $stock->save(false);
         $this->modelID = $stock->getPrimaryKey();
 
@@ -56,21 +53,21 @@ class SaveModel extends Common
         if (empty($value)) return false;
 
         $name = $post['name'];
-        if ( $name === 'client' )
-            return $this->editClientField( $value );
+        if ( $name === 'project' )
+            return $this->editProjectField( $value );
         
         $stock  = Stock::find()->select(['id',$name])->where(['id' => $id])->one();
         $stock->$name = $value;
         return $stock->save(false);
     }
-    protected function editClientField( string $clientValue ) : bool
+    protected function editProjectField( string $projectName ) : bool
     {
         $oldPath = $this->getModelPath();
-        $newPath = Common::modelPath($clientValue, $this->modelID);
+        $newPath = Common::modelPath($projectName, $this->modelID);
 
         $res = ['saved'=>false,'modelsMoved'=>false];
-        $stock = Stock::find()->select(['id','client'])->where(['id' => $this->modelID])->one();
-        $stock->client = $clientValue;
+        $stock = Stock::find()->select(['id','project'])->where(['id' => $this->modelID])->one();
+        $stock->project = $projectName;
         $res['saved'] = $stock->save(false);
         
         if ( empty($oldPath) && $res['saved'] ) return true;
@@ -342,22 +339,22 @@ class SaveModel extends Common
         return [];
     }
     /*
-     GET CLIENT NAME FOR PATH
+     GET Project NAME FOR PATH
     */
     protected function getModelPath() : string
     {
-        $stock = Stock::find()->select('client')->where(['id'=>$this->modelID]);
+        $stock = Stock::find()->select('project')->where(['id'=>$this->modelID]);
         if ( !$stock->exists() ) return '';
         $stock = $stock->one();
-        if ( empty($stock->client) ) return '';
-        return Common::modelPath($stock->client,$this->modelID);
+        if ( empty($stock->project) ) return '';
+        return Common::modelPath($stock->project,$this->modelID);
     }
 
     protected function uploadImageFile( Files $files ) : array
     {
         $modelPath = $this->getModelPath();
         if ( empty($modelPath) ) 
-            return ['id'=>0,'upload'=>false,'type'=>'picture','txt'=>'Wrong destination! Client name is empty.'];
+            return ['id'=>0,'upload'=>false,'type'=>'picture','txt'=>'Wrong destination! Project name is empty.'];
 
         $uplImg = $files->get('UploadImage');
         $newImgName = '';
@@ -546,7 +543,7 @@ class SaveModel extends Common
         if ( User::hasPermission('edit_own_models') ) 
         {
             $stock = Stock::find()
-                ->select(['id','creator_id','model_status'])
+                ->select(['id','creator_id','item_status'])
                 ->where(['id'=>$this->modelID])
                 ->andWhere([ 'creator_id' => User::getID() ]);
 
@@ -558,9 +555,9 @@ class SaveModel extends Common
     public function isEditable() : bool
     {
         $stock = Stock::find()
-            ->select(['id','model_status'])
+            ->select(['id','item_status'])
             ->where(['id'=>$this->modelID])
-            ->andWhere(['model_status'=>2]);
+            ->andWhere(['item_status'=>2]);
 
         if ( $stock->exists() ) return false;
 

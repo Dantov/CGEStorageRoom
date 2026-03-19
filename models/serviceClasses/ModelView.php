@@ -66,7 +66,7 @@ class ModelView extends Common
             $imgExt = $files->getExtension($image['name']);
             $previmg = $imgname.$prevSuff.".".$imgExt;
 
-            $modelPath = Common::modelPath($row['client'],$this->id);
+            $modelPath = Common::modelPath($row['project'],$this->id);
 
             $path = _stockDIR_ . $modelPath . "/images/";
             $fullpath = _stockDIR_ . $modelPath . "/images/".$previmg;
@@ -154,12 +154,12 @@ class ModelView extends Common
         
         foreach ( $allClients as $clientTmpl )
         {
-            if ( $this->row['client'] == $clientTmpl['name'] )
+            if ( $this->row['project'] == $clientTmpl['name'] )
             {
                 if ( User::hasPermission('hideclients') )
-                    $this->row['client'] = $clientTmpl['secondname'];
+                    $this->row['project'] = $clientTmpl['secondname'];
                 
-                $this->row['clientID'] = $clientTmpl['id'];
+                $this->row['projectID'] = $clientTmpl['id'];
                 break;
             }
         }

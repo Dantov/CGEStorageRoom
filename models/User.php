@@ -20,10 +20,10 @@ class User
      * @var integer
      */
 
+    protected static int $userID;
     protected static string $userThirdName;
     protected static string $userName;
     protected static string $userSurname;
-    protected static int $userID;
     protected static string $userFIO;
     protected static string $userFullFIO;
     protected static string $userEmail;
@@ -99,7 +99,7 @@ class User
         $user = Users::find()
             ->select(['id','name','lastname',
                       'thirdname','fio','fullFio',
-                      'role','clients','permissions',
+                      'role','projects','permissions',
                       'email','about','picture','access'])
             ->where(['id' => $id]);
         if ( !$user->exists() ) {
@@ -111,7 +111,7 @@ class User
         $user = $user->one();
 
         $user->role = json_decode($user->role,true)??[];
-        $user->clients = json_decode($user->clients,true)??[];
+        $user->projects = json_decode($user->projects,true)??[];
         $user->permissions = json_decode($user->permissions,true)??[];
 
         return self::$userData = $user;
@@ -212,19 +212,19 @@ class User
         }
         return false;
     }
-    public static function getClientsID() : array
+    public static function getProjectsID() : array
     {
-        return json_decode(self::$userInstance['clients'],true)??[];
+        return json_decode(self::$userInstance['projects'],true)??[];
     }
-    public static function getClients() : array
+    public static function getProjects() : array
     {
         $permissions = self::permissions();
-        $uClientsID = json_decode(self::$userInstance['clients'],true)??[];
+        $uProjectsID = json_decode(self::$userInstance['projects'],true)??[];
 
         $clientPerm = [];
         foreach ( $permissions as $permission ) 
         {
-            if ( in_array($permission['id'], $uClientsID) )
+            if ( in_array($permission['id'], $uProjectsID) )
             {
                 $clientPerm[ $permission['id'] ] = $permission;
             } 

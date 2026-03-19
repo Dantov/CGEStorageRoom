@@ -22,9 +22,9 @@ class SearchController extends GeneralController
     {
         $session = Yii::$app->session;
 
-        $session->set('SelectByClients',[]);
+        $session->set('SelectByProjects',[]);
 
-        $session->set('SelectByClient','All');
+        $session->set('SelectByProject','All');
         $session->set('searchFor', '');
         $session->set('selectByHashtag', '');
         $session->set('selectByModelType', '');
@@ -64,8 +64,8 @@ class SearchController extends GeneralController
         {
             case "client":
                 if ( $value ) {
-                    $this->SelectByClient( (int)$value );
-                    $this->SelectByClients( (int)$value );
+                    $this->SelectByProject( (int)$value );
+                    $this->SelectByProjects( (int)$value );
                 }  
             break;
             case "hashtag":
@@ -142,18 +142,18 @@ class SearchController extends GeneralController
         $session->set('selectByMatProbe', '');
     }
 
-    protected function SelectByClients( int $client )
+    protected function SelectByProjects( int $client )
     {
         $session = Yii::$app->session;
         if ( (int)$client === 11 )
         {
-            $session->set('SelectByClients', []);
+            $session->set('SelectByProjects', []);
             return;
         }
 
         function setClients( $newClientName, &$session )
         {
-            $stClients = $session->get('SelectByClients')??[];
+            $stClients = $session->get('SelectByProjects')??[];
             $found = false;
             foreach ( $stClients as $key => $selectedClientName )
             {
@@ -176,18 +176,18 @@ class SearchController extends GeneralController
         {
             if ( (int)$singleClient['id'] === $client )
             {
-                $session->set('SelectByClients', setClients($singleClient['name'],$session) );
+                $session->set('SelectByProjects', setClients($singleClient['name'],$session) );
                 break;
             }
         }
     }
 
-    protected function SelectByClient( int $client )
+    protected function SelectByProject( int $client )
     {
         $session = Yii::$app->session;
         if ( (int)$client === 11 )
         {
-            $session->set('SelectByClient', 'All');
+            $session->set('SelectByProject', 'All');
             return;
         }
         foreach ( $this->clients as $singleClient )
@@ -195,7 +195,7 @@ class SearchController extends GeneralController
             
             if ( $singleClient['id'] === $client )
             {
-                $session->set('SelectByClient', $singleClient['name']);
+                $session->set('SelectByProject', $singleClient['name']);
                 break;
             }
         }

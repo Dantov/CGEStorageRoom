@@ -13,14 +13,11 @@ $this->registerCsrfMetaTags();
 
 $session = Yii::$app->session;
 $controller    = $this->context;
-$clients       = $controller->clients;
-$clientName    = $controller->clientName;
+$projects      = $controller->projects;
+$projectName    = $controller->projectName;
 $nonPublished  = $controller->nonPublished;
 $allHashtags   = $controller->hashtags;
-$allModelTypes = $controller->modelTypes;
-$metalColors   = $controller->modelMaterials['metal_color'];
-$metalProbes   = $controller->modelMaterials['metal_probe'];
-$metalNames    = $controller->modelMaterials['model_material'];
+$allCategories = $controller->categories;
 $totC = '';
 if (isset($controller->totalCount))
     $totC = '('.$controller->totalCount.')';
@@ -46,7 +43,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
     <!-- Required meta tags -->
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="web/images/favicon.ico?ver3=<?=time()?>">
+    <link rel="icon" href="../images/favicon.ico?ver3=<?=time()?>">
     <script src="../js/const.js?ver=<?=time()?>"></script>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -122,88 +119,21 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="#modeltypeSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
                             <i class="fa-solid fa-swatchbook"></i>
-                            By Type: <?=$session->get('selectByModelType')?$session->get('selectByModelType'):"Clean"?>
+                            By Category: <?=$session->get('selectByCategory')?$session->get('selectByCategory'):"Clean"?>
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="modeltypeSubmenu1">
                             <li><a href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>123])?>">Clean</a></li>
-                            <?php foreach( $allModelTypes as $singleType ): ?>
+                            <?php foreach( $allCategories as $singleType ): ?>
                                 <li>
                                     <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>$singleType['name']])?>">
                                         &nbsp;&nbsp;<i class="fa-solid fa-ellipsis"></i><?=$singleType['name']?>
-                                        <?php if ( $session->get('selectByModelType') == $singleType['name'] ): ?>
+                                        <?php if ( $session->get('selectByCategory') == $singleType['name'] ): ?>
                                             &nbsp;&nbsp;<i class="fa-solid fa-check"></i>
                                         <?php endif; ?>
                                     </a>
                                 </li>
                             <?php endforeach; ?>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#materialsSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
-                            <i class="fa-solid fa-ring"></i>
-                            By Materials: <?=$matSelectedCheck?' <i class="fa-solid fa-check"></i>':"Clean" ?>
-                            <i class="fas fa-angle-left fa-pull-right"></i>
-                        </a>
-                        <ul class="collapse list-unstyled" id="materialsSubmenu1">
-                            <li><a href="<?= Url::to(['/search/select','by'=>'materials'])?>">Clean</a></li>
-                            <li>
-                                <a href="#materialsMetalSubmenu1" data-toggle="collapse" aria-expanded="false" class="sidebarMenuA">
-                                    &nbsp;&nbsp;<i class="fa-solid fa-boxes-stacked"></i>
-                                    По Металу: <?=$session->get('selectByMatMetal')?$session->get('selectByMatMetal'):"Clean" ?>
-                                    <i class="fas fa-angle-left fa-pull-right"></i>
-                                </a>
-                                <ul class="collapse list-unstyled" id="materialsMetalSubmenu1">
-                                    <?php foreach( $metalNames as $metalName ): ?>
-                                        <li>
-                                            <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'matname','v'=>$metalName['name']])?>">
-                                                &nbsp;&nbsp;&nbsp;<?=$metalName['name']?>
-                                                <?php if ( $session->get('selectByMatMetal') == $metalName['name'] ): ?>
-                                                    &nbsp;&nbsp;<i class="fa-solid fa-check"></i>
-                                                <?php endif; ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#materialsColorSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
-                                    &nbsp;&nbsp;<i class="fa-solid fa-palette"></i>
-                                    По Цвету: <?=$session->get('selectByMatColor')?$session->get('selectByMatColor'):"Clean" ?>
-                                    <i class="fas fa-angle-left fa-pull-right"></i>
-                                </a>
-                                <ul class="collapse list-unstyled" id="materialsColorSubmenu1">
-                                    <?php foreach( $metalColors as $metalColor ): ?>
-                                        <li>
-                                            <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'matcolor','v'=>$metalColor['name']])?>">
-                                                &nbsp;&nbsp;&nbsp;<?=$metalColor['name']?>
-                                                <?php if ( $session->get('selectByMatColor') == $metalColor['name'] ): ?>
-                                                    &nbsp;&nbsp;<i class="fa-solid fa-check"></i>
-                                                <?php endif; ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#materialsProbeSubmenu1" data-toggle="collapse" data-closed="true" aria-expanded="false" class="sidebarMenuA">
-                                    &nbsp;&nbsp;<i class="fa-solid fa-eye-dropper"></i>
-                                    По Пробе: <?=$session->get('selectByMatProbe')?$session->get('selectByMatProbe'):"Clean" ?>
-                                    <i class="fas fa-angle-left fa-pull-right"></i>
-                                </a>
-                                <ul class="collapse list-unstyled" id="materialsProbeSubmenu1">
-                                    <?php foreach( $metalProbes as $metalProbe ): ?>
-                                        <li>
-                                            <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'matprobe','v'=>$metalProbe['name']])?>">
-                                                &nbsp;&nbsp;&nbsp;<?=$metalProbe['name']?>
-                                                <?php if ( $session->get('selectByMatProbe') == $metalProbe['name'] ): ?>
-                                                    &nbsp;&nbsp;<i class="fa-solid fa-check"></i>
-                                                <?php endif; ?>
-                                            </a>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </li>
                         </ul>
                     </li>
                     <li>
@@ -290,15 +220,15 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <li>
                         <a href="<?=Url::to(['/site/edits','model'=>$npModel['id']])?>" class="p-2 border-bottom border-secondary">
                             <span>New record was added</span><br>
-                            <span>For <?=htmlentities($npModel['client'])?></span><br>
-                            <span class="text-warning">Non Publish!</span><br>
+                            <span>For <?=htmlentities($npModel['project'])?></span><br>
+                            <span class="text-warning">Non Published!</span><br>
                             <?php if ( empty($npModel['images']) ): ?>
                                 <img src="/pictAssets/web1.webp" width="50px" class="mr-2">
                             <?php else: ?>
                                 <?php $imgname = isset($npModel['previmg'])?$npModel['previmg']:$npModel['mainimage'] ?>
-                                <img src="<?=Url::to('/stock/'.Common::modelPath($npModel['client'],$npModel['id']).'/images/'.$imgname)?>" width="50px" class="mr-2">
+                                <img src="<?=Url::to('/stock/'.Common::modelPath($npModel['project'],$npModel['id']).'/images/'.$imgname)?>" width="50px" class="mr-2">
                             <?php endif; ?>
-                            <span><?=$npModel['number_3d']?></span><br>
+                            <span><?=$npModel['item_name']?></span><br>
                             <span>Added by: <?=User::getUsernameByID($npModel['creator_id']). " - " .formatDate($npModel['date'])?></span>
                         </a>
                     </li>
@@ -334,16 +264,16 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 <button class="btn btn-outline-secondary border-0 dropdown-toggle" type="button" title="where to find" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-gem"></i>
                                     <span>
-                                        <?= $clientName ?>
+                                        <?= $projectName ?>
                                     </span>
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">All Projects</a>
                                     <div class="dropdown-divider"></div>
-                                    <?php foreach( $clients as $client ):?>
+                                    <?php foreach( $projects as $client ):?>
                                     <?php $clname = User::hasPermission('hideclients')?$client['secondname']:$client['name'] ?>
                                     <a class="dropdown-item" data-clientID="<?=$client['id']?>" href="<?=Url::to(['/search/select','by'=>'client','v'=>$client['id'] ])?>"><?=htmlentities($clname)?>
-                                    <?php if( in_array($client['name'],$session->get('SelectByClients')??[] ) ):?>
+                                    <?php if( in_array($client['name'],$session->get('SelectByProject')??[] ) ):?>
                                         <span class="float-right"><i class="fa-solid fa-square-check"></i></span>
                                     <?php endif; ?>
                                     </a>
@@ -492,7 +422,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <div class="dropdown-menu">
                         <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">All Projects</a>
                         <div class="dropdown-divider"></div>
-                        <?php foreach( $clients as $client ):?>
+                        <?php foreach( $projects as $client ):?>
                         <?php $clname = User::hasPermission('hideclients')?$client['secondname']:$client['name'] ?>
                             <a class="dropdown-item" data-clientID="<?=$client['id']?>" href="<?=Url::to(['/search/select','by'=>'client','v'=>$client['id'] ])?>"><?=htmlentities($clname) ?></a>
                         <?php endforeach;?>
