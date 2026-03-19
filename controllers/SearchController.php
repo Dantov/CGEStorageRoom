@@ -62,7 +62,7 @@ class SearchController extends GeneralController
         $value = $request->get('v');
         switch( $request->get('by') )
         {
-            case "client":
+            case "project":
                 if ( $value ) {
                     $this->SelectByProject( (int)$value );
                     $this->SelectByProjects( (int)$value );
@@ -134,68 +134,60 @@ class SearchController extends GeneralController
             }
         }
     }
-    protected function materialsPurge()
-    {
-        $session = Yii::$app->session;
-        $session->set('selectByMatColor', '');
-        $session->set('selectByMatMetal', '');
-        $session->set('selectByMatProbe', '');
-    }
 
-    protected function SelectByProjects( int $client )
+    protected function SelectByProjects( int $project )
     {
         $session = Yii::$app->session;
-        if ( (int)$client === 11 )
+        if ( (int)$project === 11 )
         {
             $session->set('SelectByProjects', []);
             return;
         }
 
-        function setClients( $newClientName, &$session )
+        function setProjects( $newPrjName, &$session )
         {
-            $stClients = $session->get('SelectByProjects')??[];
+            $stPrjs = $session->get('SelectByProjects')??[];
             $found = false;
-            foreach ( $stClients as $key => $selectedClientName )
+            foreach ( $stPrjs as $key => $selectedPrjName )
             {
-                if ( $selectedClientName == $newClientName )
+                if ( $selectedPrjName == $newPrjName )
                 {
                     //remove cl here
-                    unset($stClients[$key]);
+                    unset($stPrjs[$key]);
                     $found = true;
                     break;
                 }
             }
             if ( !$found ) {
                 //add new client name here
-                $stClients[] = $newClientName;
+                $stPrjs[] = $newPrjName;
             }
-            return $stClients;
+            return $stPrjs;
         }
 
-        foreach ( $this->clients as $singleClient )
+        foreach ( $this->projects as $singlePrj )
         {
-            if ( (int)$singleClient['id'] === $client )
+            if ( (int)$singlePrj['id'] === $project )
             {
-                $session->set('SelectByProjects', setClients($singleClient['name'],$session) );
+                $session->set('SelectByProjects', setProjects($singlePrj['name'],$session) );
                 break;
             }
         }
     }
 
-    protected function SelectByProject( int $client )
+    protected function SelectByProject( int $project )
     {
         $session = Yii::$app->session;
-        if ( (int)$client === 11 )
+        if ( (int)$project === 11 )
         {
             $session->set('SelectByProject', 'All');
             return;
         }
-        foreach ( $this->clients as $singleClient )
+        foreach ( $this->projects as $singleProject )
         {
-            
-            if ( $singleClient['id'] === $client )
+            if ( $singleProject['id'] === $project )
             {
-                $session->set('SelectByProject', $singleClient['name']);
+                $session->set('SelectByProject', $singleProject['name']);
                 break;
             }
         }

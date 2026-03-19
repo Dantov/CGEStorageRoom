@@ -166,7 +166,7 @@ class Auth extends Common
         $session->set('selectByMatProbe', '');
 
         $session->set('SelectByNonPub', '');
-        $session->set('SelectByDeleted', '');
+        $session->set('SelectByDeleted','');
     }
 
     protected function setCookieVariables($session)

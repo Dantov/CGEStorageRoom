@@ -86,7 +86,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     <?php if ( User::isAdmin() ): ?>
                     <li>
                         <?php $dellactive = $session->get('SelectByDeleted')?"bg-secondary":"" ?>
-                        <a class="<?=$dellactive?>" href="<?=Url::to(['/search/select','by'=>'deleted'])?>"><i class="fa-solid fa-ban"></i> Удаленные</a>
+                        <a class="<?=$dellactive?>" href="<?=Url::to(['/search/select','by'=>'deleted'])?>"><i class="fa-solid fa-ban"></i> Deleted</a>
                     </li>
                     <?php endif; ?>
                 </ul>
@@ -268,12 +268,12 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                     </span>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">All Projects</a>
+                                    <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'project','v'=>11])?>">All Projects</a>
                                     <div class="dropdown-divider"></div>
-                                    <?php foreach( $projects as $client ):?>
-                                    <?php $clname = User::hasPermission('hideclients')?$client['secondname']:$client['name'] ?>
-                                    <a class="dropdown-item" data-clientID="<?=$client['id']?>" href="<?=Url::to(['/search/select','by'=>'client','v'=>$client['id'] ])?>"><?=htmlentities($clname)?>
-                                    <?php if( in_array($client['name'],$session->get('SelectByProject')??[] ) ):?>
+                                    <?php foreach( $projects as $project ): ?>
+                                    <?php $clname = User::hasPermission('hideclients')?$project['secondname']:$project['name'] ?>
+                                    <a class="dropdown-item" data-clientID="<?=$project['id']?>" href="<?=Url::to(['/search/select','by'=>'project','v'=>$project['id'] ])?>"><?=htmlentities($clname)?>
+                                    <?php if( in_array($project['name'],$session->get('SelectByProjects')??[] ) ):?>
                                         <span class="float-right"><i class="fa-solid fa-square-check"></i></span>
                                     <?php endif; ?>
                                     </a>
@@ -333,7 +333,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 <div class="dropdown-divider"></div>
                                 <?php if(User::hasPermission('jewelbox')): ?>
                                     <a href="<?=Url::to(['site/jewel','box'=>'show'])?>" class="dropdown-item mt-2">
-                                        <h4><i class="far fa-gem mr-3"></i>Box</h4>
+                                        <h4><i class="fa-solid fa-box-open"></i> My Box</h4>
                                     </a>
                                 <?php endif;?>
                                 <?php if(User::hasPermission('profile')): ?>
