@@ -46,7 +46,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
     <!-- Required meta tags -->
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="../images/favicon.ico?ver=<?=time()?>">
+    <link rel="icon" href="web/images/favicon.ico?ver3=<?=time()?>">
     <script src="../js/const.js?ver=<?=time()?>"></script>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
