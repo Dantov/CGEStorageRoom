@@ -411,18 +411,18 @@ AddEdit.prototype.submitButtons = function( button, reqest )
 	switch ( button.getAttribute('data-publish') )
 	{
 		case "pub":
-			if (!confirm('Все данные верны? Опубликлвать модель?'))
+			if (!confirm('All data is correct? Publish iten?'))
 				return;
 			reqest.url = "publish";
 			if ( !this.validator.validate() ) return;
 		break;
 		case "excl":
-			if (!confirm('Исключить модель из поиска?'))
+			if (!confirm('Exclude item from search?'))
 				return;
 			reqest.url = "exclude";
 		break;
 		case "del":
-			if (!confirm('Удалить модель?'))
+			if (!confirm('Delete item?'))
 				return;
 			reqest.url = "deletemodel";
 		break;

@@ -59,9 +59,6 @@ Validator.prototype.validate = function()
     if ( !this.validate_Picts() ) {
         return false;
     }
-    if ( !this.validate_Material() ) {
-        return false;
-    }
 
     //return false;
     return true;

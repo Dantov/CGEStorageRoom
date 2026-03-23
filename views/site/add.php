@@ -114,11 +114,40 @@ $this->title = 'Edit Item';
             </div>
             <?php endif; ?>
         </div>
-        
         <div class="form-group">
             <label for="description"><i class="fa-regular fa-message"></i> Description</label>
             <textarea class="form-control" editable name="description" id="description" rows="3"><?=$stockData['description'] ?></textarea>
         </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="shelfnum">Shelf Number</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text badge-light "><i class="fa-regular fa-square-full"></i></div>
+                    </div>
+                    <input type="text" editable class="form-control" name="shelfnum" id="shelfnum" value="<?=$stockData['shelfnum']?>" placeholder="" >
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="projects">Storage Room Name</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text badge-light"><i class="fa-regular fa-square-full"></i></div>
+                    </div>
+                    <input type="text" editable class="form-control" value="<?=htmlspecialchars($stockData['storageroom'])?>" name="storageroom" id="storageroom" aria-label="" >
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"></button>
+                        <div class="dropdown-menu">
+                            <?php foreach ($sevData['storageroom'] as $key => $value): ?>
+                            <a class="dropdown-item" style="cursor: pointer;" elemToAdd><?php echo $value['name'] ?></a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
 </div>
 
 <?php if ( User::hasPermission('images') || User::hasPermission('files') ): ?>

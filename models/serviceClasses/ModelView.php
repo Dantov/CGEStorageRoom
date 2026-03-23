@@ -10,7 +10,7 @@ use yii\helpers\Url;
 class ModelView extends Common
 {
     public $id;
-    public $number_3d;
+    public $item_name;
 	public $row;
 
     function __construct( $id = 0 )
@@ -25,21 +25,21 @@ class ModelView extends Common
 	public function getStockData()
     {
         $this->row = Stock::find()
-            ->with(['images','materials','gems','d3_files'])
+            ->with(['images'])
             ->where(['=','id',$this->id])
             ->asArray()
             ->limit(1)
             ->one();
 
-		$this->number_3d = $this->row['number_3d'];
+		$this->item_name = $this->row['item_name'];
         $this->setMainImg();
         $this->addPreviewImages();
-        $this->setSizesRange();
+        //$this->setSizesRange();
         $this->setHashtags();
-        $this->setDataFiles();
+        //$this->setDataFiles();
         $this->setJewelStoredModels();
 
-        $this->setClientID();
+        $this->setProjectID();
         $this->row['isEditBtn'] = $this->drawEditBtn( $this->row['creator_id'] );
 
 
@@ -115,10 +115,12 @@ class ModelView extends Common
             $this->row['mainimageID'] = $randomimg['id'];
         }
     }
+    /*
     protected function setSizesRange()
     {
         $this->row['size_range'] = explode('-',$this->row['size_range']);
     }
+    */
     protected function setHashtags()
     {
         $hashtagsC = ['success','info','warning','primary','secondary','danger','dark'];
@@ -131,6 +133,7 @@ class ModelView extends Common
         $this->row['hashtags_colors'] = $hashtagsC;
     }
 
+    /*
     protected function setDataFiles()
     {  
         $this->row['overal_size'] = 0;
@@ -147,12 +150,13 @@ class ModelView extends Common
         $this->row['overal_size'] = $this->convertFileSize($this->row['overal_size']);   
         $this->row['overal_zipsize'] = $this->convertFileSize($this->row['overal_zipsize']);   
     }
+    */
 
-    protected function setClientID()
+    protected function setProjectID()
     {
-        $allClients = $this->getClients();
+        $allPrjs = $this->getProjects();
         
-        foreach ( $allClients as $clientTmpl )
+        foreach ( $allPrjs as $clientTmpl )
         {
             if ( $this->row['project'] == $clientTmpl['name'] )
             {

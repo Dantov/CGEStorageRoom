@@ -67,11 +67,15 @@ class Stock extends ActiveRecord
             'insurance',
             'project',
             'description',
+            'storageroom',
+            'shelfnum',
             'hashtags',
             'item_status',
             'date',
             'create_date',
             'creator_id',
+            'reserv_user_id',
+            'reserv_user_name',
         ];
         return [
             self::SCENARIO_ADD => $columns,

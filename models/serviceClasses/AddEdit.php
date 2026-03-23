@@ -61,6 +61,7 @@ class AddEdit extends ModelView
             'category',
             'project',
             'hashtag',
+            'storageroom',
         ];
 		$tables = [];
 
