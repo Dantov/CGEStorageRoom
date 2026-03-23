@@ -18,7 +18,7 @@ class UsersAll extends Common
 	function __construct( int $id = null)
     {
         $this->userfields = [
-            'id','login','name','lastname','thirdname','fio','fullFio','role','clients','permissions',
+            'id','login','name','lastname','thirdname','fio','fullFio','role','projects','permissions',
             'files_access','about','email','picture','access'];
         if ( !($id > 0 && $id < PHP_INT_MAX) ) return;
 
@@ -41,8 +41,8 @@ class UsersAll extends Common
 	}
     public function getBasicData( string $stab='' ) : array
     {
-        $res = ['clients'=>[],'roles'=>[],'perm'=>[]];
-        $res['clients'] = Service_data::find()->where(['tab'=>'client'])->asArray()->orderBy('name')->all();
+        $res = ['projects'=>[],'roles'=>[],'perm'=>[]];
+        $res['projects'] = Service_data::find()->where(['tab'=>'project'])->asArray()->orderBy('name')->all();
         $res['roles'] = Service_data::find()->where(['tab'=>'role'])->asArray()->orderBy('name')->all();
         $res['perm'] = Permissions::find()->select(['id','name','description'])->asArray()->all();
 
@@ -57,8 +57,8 @@ class UsersAll extends Common
 
         switch( $stab )
         {
-            case "clients":
-                return $res['clients'];
+            case "projects":
+                return $res['projects'];
             break;
             case "roles":
                 return $res['roles'];
@@ -138,18 +138,18 @@ class UsersAll extends Common
 
         return $permittedFieldAll;
     }
-    public function getProjectss() : array
+    public function getProjects() : array
     {
         $projects = Service_data::find()->where(['tab'=>'project'])->asArray()->orderBy('name')->all();
         $userProjects = json_decode($this->user['projects'],true)??[];
-        foreach( $projects as &$sClient )
-            $sClient['active'] = 0;
+        foreach( $projects as &$sPrjct )
+            $sPrjct['active'] = 0;
 
-        foreach( $userProjects as $userClientID )
+        foreach( $userProjects as $userPrjID )
         {
-            foreach( $projects as &$client )
-                if ( (int)$client['id'] === (int)$userClientID ) 
-                    $client['active'] = 1;
+            foreach( $projects as &$project )
+                if ( (int)$project['id'] === (int)$userPrjID ) 
+                    $project['active'] = 1;
         }
 
         return $projects;
@@ -264,14 +264,14 @@ class UsersAll extends Common
         $thisuser->about = $v->sanitarizePost('usernote');
 
         $uRoles = [];
-        $uClients = [];
+        $uProjects = [];
         if ( isset($post['role']) ) 
             $uRoles = $this->applyUser("role", $post['role'] );
-        if ( isset($post['clients']) )
-            $uClients = $this->applyUser("client", $post['clients']);
+        if ( isset($post['projects']) )
+            $uProjects = $this->applyUser("project", $post['projects']);
 
         $thisuser->role = json_encode($uRoles);
-        $thisuser->clients = json_encode($uClients);
+        $thisuser->projects = json_encode($uProjects);
 
         return $thisuser->save(false);
     }
@@ -377,14 +377,14 @@ class UsersAll extends Common
         $newUser->email = $post['email']; 
 
         $uRoles  = [];
-        $uClients = [];
+        $uProjects = [];
         if ( isset($post['role']) ) 
             $uRoles = $this->applyUser("role", $post['role'] );
-        if ( isset($post['clients']) )
-            $uClients = $this->applyUser("client", $post['clients']);
+        if ( isset($post['projects']) )
+            $uProjects = $this->applyUser("project", $post['projects']);
 
         $newUser->role = json_encode($uRoles);
-        $newUser->clients = json_encode($uClients);
+        $newUser->projects = json_encode($uProjects);
 
         $newUser->permissions = json_encode([]);
         $newUser->files_access = json_encode([]);

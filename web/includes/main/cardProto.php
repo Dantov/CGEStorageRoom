@@ -30,10 +30,10 @@ $clientName = empty($model['project']) ? '<b class="text-muted">empty</b>' : htm
                     <i class="fas fa-pencil-alt"></i>
                 </a>
                 <?php endif; ?>
-                <?php if ( User::hasPermission('jewelbox') && !$mStored && !User::isAdmin() ): ?>
+                <?php if ( User::hasPermission('mybox') && !$mStored && !User::isAdmin() ): ?>
                 <button class="btn btn-primary btn-sm jewelboxBtnMain" role="button" data-id="<?=$model['id']?>" data-placement="bottom" title="Add to Box">
                     <input class="addJBdata" type="hidden" data-img="/stock/<?=Common::modelPath($model['project'],$model['id'])?>/images/<?=$imgname?>" data-link="<?=Url::to(['site/view','id'=>$model['id'] ])?>" data-n3d="<?=$model['item_name']?>" data-mtype="<?=$model['item_category']?>" data-client="<?=htmlentities($model['project'])?>">
-                    <i class="fa-solid fa-basket-shopping"></i>
+                    <i class="fa-solid fa-dolly"></i>
                 </button>
                 <?php endif; ?>
                 <?php if (User::hasFilesAccess($model['id'])): ?>

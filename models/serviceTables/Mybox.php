@@ -11,7 +11,7 @@ namespace app\models\serviceTables;
 
 use yii\db\ActiveRecord;
 
-class Jewelbox extends ActiveRecord
+class Mybox extends ActiveRecord
 {
 
 }

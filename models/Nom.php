@@ -10,21 +10,23 @@ use yii\db\ActiveQuery;
 
 class Nom extends Common
 {
-    protected array $projects;
+    protected array $prjs;
 
     public function getModelTypes() : array
     {
          return Service_data::find()->where(['tab' => 'model_type'])->asArray()->all();
     }
-
+    
+    /*
     public function getProjects( string $tab ) : array
     {
-        if ( isset($this->projects) && is_array($this->projects) && !empty($this->projects) ) {
-            return $this->projects;
+        if ( isset($this->prjs) && is_array($this->prjs) && !empty($this->prjs) ) {
+            return $this->prjs;
         } else {
-            return $this->projects = Service_data::find()->where(['tab' => 'project'])->asArray()->all(); 
+            return $this->prjs = Service_data::find()->where(['tab' => 'project'])->asArray()->all(); 
         }
     }
+    */
     
     protected function addSearch()
     {

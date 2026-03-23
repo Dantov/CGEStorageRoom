@@ -93,11 +93,11 @@ class UsersController extends GeneralController
             }
         }
 
-        $clients = $users->getBasicData('clients');
+        $projects = $users->getBasicData('projects');
         $allroles = $users->getBasicData('roles');
         $permissions = $users->getBasicData('perm');
         
-        $compact = compact(['clients','allroles','permissions']);
+        $compact = compact(['projects','allroles','permissions']);
         return $this->render('add',$compact);
     }
 
@@ -116,12 +116,12 @@ class UsersController extends GeneralController
             throw new \Exception('you have no rights!',500);
 
         $single = $users->user;
-        $clients = $users->getClients();
+        $projects = $users->getProjects();
         $allroles = $users->getRoles();
         $permissions = $users->permissionsApplyed();
         $uPermissions = $users->hisPermissions();
 
-        $compact = compact(['single','clients','allroles','permissions','uPermissions']);
+        $compact = compact(['single','projects','allroles','permissions','uPermissions']);
         return $this->render('edit',$compact);
     }
 
@@ -136,7 +136,7 @@ class UsersController extends GeneralController
 
         $users = new UsersAll($id);
 
-        // for update user permittion and clients
+        // for update user permittion and projects
         if ( $request->isAjax && $request->isPost )
         {
             if (!$users->accessControl()) exit( json_encode("no permission to edit") ); 

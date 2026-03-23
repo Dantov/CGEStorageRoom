@@ -1,6 +1,6 @@
 <?php 
 namespace app\models;
-use app\models\serviceTables\{Service_data, Stock, Jewelbox, Users};
+use app\models\serviceTables\{Service_data, Stock, Mybox, Users};
 use app\models\User;
 use Yii;
 
@@ -224,7 +224,7 @@ class Common
 
 	public function getJewelStoredModels() : array
 	{
-		$jb = Jewelbox::find()->where(['userid'=>User::getID()]);
+		$jb = Mybox::find()->where(['userid'=>User::getID()]);
 		if (!$jb->exists()) return [];
         $jb = $jb->all();
 

@@ -25,7 +25,7 @@ $this->title = 'Box ' . User::getFIO();
         <button class="btn btn-<?=($orderStatus===2)?"secondary":"info"?> btn-block" type="button" data-toggle="collapse" data-target="#OrderCollapse-<?=$orderID?>" aria-expanded="false" aria-controls="OrderCollapse-<?=$orderID?>">
             <h5 class="tittle-w3-agileits mb-2 pt-2">Заказ №<?=$orderID?> от <?=$orderData['lastdate']?>
                 <?php if( $orderStatus === 0 ): ?>
-                <span class="badge badge-pill badge-primary">Ожидает...</span>
+                <span class="badge badge-pill badge-primary">Waiting...</span>
                 <?php endif; ?>
                 <?php if( $orderStatus === 1 ): ?>
                 <span class="badge badge-pill badge-primary">Сформирован и отправлен!</span>

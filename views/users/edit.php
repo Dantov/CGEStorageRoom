@@ -9,7 +9,7 @@ $session = Yii::$app->session;
 $this->params['breadcrumbs'][] = $this->title;
 $tt=time();
 $this->registerJsFile("@web/js/users/Users.js?v=$tt");
-$uClients = [];
+$uProjects = [];
 ?>
 <script class="d-none dellscript">
 let appliedRights = [];
@@ -29,7 +29,7 @@ description: '<?=$uPermission['description']?>'
         <div class="input-group-prepend">
             <a href="<?=Url::previous()?>" role="button" class="btn btn-outline-secondary">
                 <i class="fas fa-caret-left"></i>
-                <span>Назад</span>
+                <span>Back</span>
             </a>
         </div>
     </div>
@@ -105,11 +105,11 @@ description: '<?=$uPermission['description']?>'
                     </div>
                     <div class="row">
                         <div class="col-md-12 mb-3 form-group">
-                            <label for="ClientsControlSelect">All Clients:</label>
+                            <label for="ClientsControlSelect">All Projects:</label>
                             <div class="btn-group-toggle" data-toggle="buttons">
-                                <?php foreach ($clients as $client): ?>
-                                  <label class="btn btn-outline-primary <?=$client['active']?"active":""?> mb-1">
-                                    <input type="checkbox" <?=$client['active']?"checked":""?> value="<?=$client['id']?>" name="clients[]" ><?=$client['name']?>
+                                <?php foreach ($projects as $project): ?>
+                                  <label class="btn btn-outline-primary <?=$project['active']?"active":""?> mb-1">
+                                    <input type="checkbox" <?=$project['active']?"checked":""?> value="<?=$project['id']?>" name="projects[]" ><?=$project['name']?>
                                   </label>
                                 <?php endforeach; ?>
                             </div>

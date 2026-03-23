@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
 use app\models\{User,Common};
-use app\models\serviceClasses\JewelStore;
+use app\models\serviceClasses\MyStore;
 
 AppAsset::register($this);
 
@@ -284,31 +284,33 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                     </div>
                 </div>
                 <?php endif;?>
-                <?php if( User::hasPermission('jewelbox')): ?>
+                <?php if( User::hasPermission('mybox')): ?>
                 <div class="p-1 bd-highlight jewelboxTopbar">
                     <ul class="user-bar top-icons-agileits-w3layouts">
                         <li class="nav-item dropdown">
                             <a class="dropdown-toggle" style="" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="false">
                                 <?php if( !User::isAdmin()): ?>
-                                <span class="p-1 border border-dark bg-secondary text-light rounded-circle jbBadge"><?=JewelStore::getModelsCount()?></span>
+                                <span class="p-1 border border-dark bg-secondary text-light rounded-circle jbBadge"><?=MyStore::getModelsCount()?></span>
                                 <?php endif; ?>
-                                <div class="profile-l mr-0">
-                                    <img src="/pictAssets/jewels-inside.png" class="img-fluid" alt="Responsive image">
+                                <?php $colormyboxicon = MyStore::getModelsCount()>0?"primary":"secondary"; ?>
+                                <div class="profile-l mr-0 text-<?=$colormyboxicon?>" data-toggle="tooltip" title="My Box">
+                                    <h2><i class="fa-solid fa-box-open"></i></h2>
+                                    <!-- <img src="/pictAssets/jewels-inside.png" class="img-fluid" alt="Responsive image"> -->
                                 </div>
                             </a>
                             <div class="dropdown-menu drop-3">
-                                <?php $whatinside=User::isAdmin()?JewelStore::getOrdersCount()." orders inside":JewelStore::getModelsCount()." garbages inside"?>
+                                <?php $whatinside=User::isAdmin()?MyStore::getOrdersCount()." orders inside":MyStore::getModelsCount()." garbages inside"?>
                                 <div class="profile-r align-self-center">
                                     <h5 class="sub-title-w3-agileits"><small><?=$whatinside?></small></h5>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <?php $uri = User::isAdmin() ? 'showorders' : 'show' ?>
-                                <a href="<?=Url::to(['site/jewel','box'=>$uri])?>" class="dropdown-item mt-2">
+                                <a href="<?=Url::to(['site/my','box'=>$uri])?>" class="dropdown-item mt-2">
                                     <h4><i class="far fa-gem mr-3"></i>Show</h4>
                                 </a>
-                                <?php if(JewelStore::getModelsCount()): ?>
-                                <a href="<?=Url::to(['site/jewel','box'=>'send'])?>" class="dropdown-item mt-2">
+                                <?php if(MyStore::getModelsCount()): ?>
+                                <a href="<?=Url::to(['site/my','box'=>'send'])?>" class="dropdown-item mt-2">
                                     <h4><i class="fa-regular fa-paper-plane"></i> Send Query</h4>
                                 </a>
                                 <?php endif;?>
@@ -420,11 +422,11 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                         </span>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'client','v'=>11])?>">All Projects</a>
+                        <a class="dropdown-item" data-clientID="11" href="<?=Url::to(['/search/select','by'=>'project','v'=>11])?>">All Projects</a>
                         <div class="dropdown-divider"></div>
-                        <?php foreach( $projects as $client ):?>
-                        <?php $clname = User::hasPermission('hideclients')?$client['secondname']:$client['name'] ?>
-                            <a class="dropdown-item" data-clientID="<?=$client['id']?>" href="<?=Url::to(['/search/select','by'=>'client','v'=>$client['id'] ])?>"><?=htmlentities($clname) ?></a>
+                        <?php foreach( $projects as $project ):?>
+                        <?php $clname = User::hasPermission('hideclients')?$project['secondname']:$project['name'] ?>
+                            <a class="dropdown-item" data-clientID="<?=$project['id']?>" href="<?=Url::to(['/search/select','by'=>'project','v'=>$project['id'] ])?>"><?=htmlentities($clname) ?></a>
                         <?php endforeach;?>
                     </div>
                 </div>
@@ -436,7 +438,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
         <!-- Copyright -->
         <div class="copyright-w3layouts shadow pt-2 pb-2 mt-2 text-center" style="bottom: 0 !important;" id="footer">
             <p class="float-left ml-3"><small>Developed by Vadym Bykov</small></p>
-            <p class="float-right mr-3"> ver 0.0.1 alpha</p>
+            <p class="float-right mr-3"> ver 0.0.3 alpha</p>
             <div class="clearfix"></div>
         </div>
         <!--// Copyright -->

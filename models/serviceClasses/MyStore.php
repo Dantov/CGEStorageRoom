@@ -1,13 +1,13 @@
 <?php
 namespace app\models\serviceClasses;
 
-use app\models\serviceTables\{Stock,Service_data,Jewelbox,Users};
+use app\models\serviceTables\{Stock,Service_data,Mybox,Users};
 use app\models\{Common,Files,User,Validator};
 
 use Yii;
 use yii\helpers\Url;
 
-class JewelStore extends Common
+class MyStore extends Common
 { 
     protected int $modelID;
     protected string $modelComment;
@@ -50,7 +50,7 @@ class JewelStore extends Common
 
     public static function getModelsCount() : int
     {
-        $jb = Jewelbox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
+        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
         if ($jb->exists()) {
             $jb =$jb->one();
             return count(json_decode($jb->storedmodels,true)??[]);
@@ -59,7 +59,7 @@ class JewelStore extends Common
     }
     public static function getOrdersCount() : int
     {
-        $jb = Jewelbox::find()->where(['status'=>1])->orWhere(['status'=>0]);
+        $jb = Mybox::find()->where(['status'=>1])->orWhere(['status'=>0]);
         if ( $jb->exists() ) 
         {
             return $jb->count();
@@ -69,14 +69,14 @@ class JewelStore extends Common
 
     public function add()
     {
-        $jbt = Jewelbox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
+        $jbt = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
         $jbModels = [];
         if ($jbt->exists())
         {
             $jbt = $jbt->one();
             $jbModels = json_decode($jbt->storedmodels,true)??[];
         } else {
-            $jbt = new Jewelbox();    
+            $jbt = new Mybox();    
         }
 
         $jbModel = [
@@ -97,7 +97,7 @@ class JewelStore extends Common
     public function getOrderStatus( int $id ) : int
     {
         if ( $id < 1 || $id > PHP_INT_MAX ) return false;
-        $jb = Jewelbox::find()->select(['id','status'])->where(['userid'=>User::getID()])->andWhere(['id'=>$id]);
+        $jb = Mybox::find()->select(['id','status'])->where(['userid'=>User::getID()])->andWhere(['id'=>$id]);
         if (!$jb->exists()) return false;
         $jb = $jb->one();
 
@@ -106,7 +106,7 @@ class JewelStore extends Common
 
     public function getAllOrders( int $userID = 0 ) : array
     {
-        $jb = Jewelbox::find();
+        $jb = Mybox::find();
         if ( $userID ) {
            $jb->where(['userid'=>User::getID()]); 
         } else {
@@ -136,7 +136,7 @@ class JewelStore extends Common
      */
     public function getStoredModels() : array
     {
-        $jb = Jewelbox::find()->where(['userid'=>User::getID()]);
+        $jb = Mybox::find()->where(['userid'=>User::getID()]);
         $storedmodels = [];
         if (!$jb->exists()) return [];
         
@@ -202,7 +202,7 @@ class JewelStore extends Common
 
     public function edit()
     {
-        $jb = Jewelbox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$this->orderID]);//andWhere(['status'=>0]);
+        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$this->orderID]);//andWhere(['status'=>0]);
         if (!$jb->exists()) return false;
         $jb = $jb->one();
         $storedmodels = json_decode($jb->storedmodels,true)??[];
@@ -230,7 +230,7 @@ class JewelStore extends Common
         if ( $id < 1 || $id > PHP_INT_MAX ) return false;
         if ( $orderid < 1 || $orderid > PHP_INT_MAX ) return false;
 
-        $jb = Jewelbox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
+        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
         if ( !$jb->exists() ) return false;
         $jb = $jb->one();
         $storedmodels = json_decode($jb->storedmodels,true)??[];
@@ -257,7 +257,7 @@ class JewelStore extends Common
     public function sendOrder( int $orderid )
     {
         if ( $orderid < 1 || $orderid > PHP_INT_MAX ) return false;
-        $jb = Jewelbox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
+        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
         if (!$jb->exists()) return false;
         $jb = $jb->one();
         
@@ -281,14 +281,14 @@ class JewelStore extends Common
     public function removeOrder( int $orderid )
     {
         if ( $orderid < 1 || $orderid > PHP_INT_MAX ) return false;
-        $jb = Jewelbox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
+        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
         if (!$jb->exists()) return false;
         $jb = $jb->one();
 
         if ($jb->delete())
         {
             $sended = Yii::$app->mailer->compose()
-            ->setFrom('insidemail@powered-jewelry-base.com')
+            //->setFrom('insidemail@powered-jewelry-base.com')
             ->setTo('vady365@yahoo.com')
             ->setSubject('PJ3DB - Заказ УДАЛЕН!')
             ->setTextBody('Заказ № ' . $jb->id . ' от ' . User::getFIO() . ' УДАЛЕН!')
@@ -300,7 +300,7 @@ class JewelStore extends Common
     public function openModelFiles( string $condition = 'one' ) : bool
     {
         // Jewel Box Part
-        $jb = Jewelbox::find()->where(['id'=>$this->orderID]);
+        $jb = Mybox::find()->where(['id'=>$this->orderID]);
         if ( !$jb->exists() ) return false;
         $jb = $jb->one();
         $userID = $jb->userid;
@@ -363,7 +363,7 @@ class JewelStore extends Common
 
     public function setModelPrice()
     {
-        $jb = Jewelbox::find()->where(['id'=>$this->orderID]);
+        $jb = Mybox::find()->where(['id'=>$this->orderID]);
         if ( !$jb->exists() ) return false;
         $jb = $jb->one();
 
@@ -386,7 +386,7 @@ class JewelStore extends Common
 
     public function accessControl() : bool
     {
-        if ( User::hasPermission('jewelbox')) return true;
+        if ( User::hasPermission('mybox')) return true;
         return false;
     }
 }

@@ -7,7 +7,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\{Main,User,Nom};
-use app\models\serviceClasses\{SaveModel,AddEdit,ModelView,JewelStore,UsersAll,Crypt,ApprovePosition};
+use app\models\serviceClasses\{SaveModel,AddEdit,ModelView,MyStore,UsersAll,Crypt,ApprovePosition};
 
 class SiteController extends GeneralController
 {
@@ -258,82 +258,82 @@ class SiteController extends GeneralController
         
     }
 
-    public function actionJewel()
+    public function actionMy()
     {
         $request = Yii::$app->request;
         $response = Yii::$app->response;
 
         $proceed = ($request->isAjax && $request->isPost);
         $box = (string)$request->get('box');
-        $jewelbox = new JewelStore( $request->post() );
+        $mybox = new MyStore( $request->post() );
 
         switch($box)
         {
             case "add":
-                if ( !$jewelbox->accessControl() ) 
-                    exit(json_encode("false 123"));
+                if ( !$mybox->accessControl() ) 
+                    exit(json_encode("not enought rights"));
 
                 if ( !$proceed ) exit(json_encode(false));
-                exit(json_encode($jewelbox->add()));
+                exit(json_encode($mybox->add()));
             break;
             case "show":
-                if ( !$jewelbox->accessControl() ) 
+                if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                $allOrders = $jewelbox->getAllOrders( User::getID() );
+                $allOrders = $mybox->getAllOrders( User::getID() );
                 $comp = compact(['allOrders']);
-                return $this->render('jewelbox',$comp);
+                return $this->render('mybox',$comp);
             break;
             case "showorders":
                 if ( !User::isAdmin() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                $allOrders = $jewelbox->getAllOrders();
+                $allOrders = $mybox->getAllOrders();
                 $comp = compact(['allOrders']);
-                return $this->render('jewelboxorders',$comp);
+                return $this->render('myboxorders',$comp);
             break;
             case "setmodelprice":
                 if ( !User::isAdmin() || !$proceed ) exit(json_encode(false));
 
-                exit(json_encode( $jewelbox->setModelPrice() ));
+                exit(json_encode( $mybox->setModelPrice() ));
             break;
             case "openmodel":
                 if ( !User::isAdmin() || !$proceed ) exit(json_encode(false));
-                exit(json_encode( $jewelbox->openModelFiles('one') ));
+                exit(json_encode( $mybox->openModelFiles('one') ));
             break;
             case "openallmodels":
                 if ( !User::isAdmin() || !$proceed ) exit(json_encode(false));
 
-                exit(json_encode( $jewelbox->openModelFiles('all') ));
+                exit(json_encode( $mybox->openModelFiles('all') ));
             break;
             case "edit":
                 if ( !$proceed ) exit(json_encode(false));
-                if ( !$jewelbox->accessControl() ) exit(json_encode(false));
+                if ( !$mybox->accessControl() ) exit(json_encode(false));
 
-                exit(json_encode( $jewelbox->edit() ));
+                exit(json_encode( $mybox->edit() ));
             break;
             case "remove":
-                if ( !$jewelbox->accessControl() ) 
+                if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                $jewelbox->remove($request->get('id'),$request->get('orderid')); 
-                $response->redirect(['/site/jewel/','box'=>'show'])->send();
+                $mybox->remove($request->get('id'),$request->get('orderid')); 
+                $response->redirect(['/site/my/','box'=>'show'])->send();
             break;
             case "sendorder":
-                if ( !$jewelbox->accessControl() ) 
+                if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                if ( !$jewelbox->sendOrder( $request->get('orderid') ) ) 
-                    $response->redirect(['/site/error/','message'=>"При обоаботке заказа возникла ошибка!"])->send();
+                if ( !$mybox->sendOrder( $request->get('orderid') ) ) 
+                    $response->redirect(['/site/error/','message'=>"Some error occurred while order is procced!"])->send();
 
-                $response->redirect(['/site/jewel/','box'=>'show'])->send();
+                $response->redirect(['/site/my/','box'=>'show'])->send();
             break;
             case "removeorder":
-                if ( !$jewelbox->accessControl() ) 
+                if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                $jewelbox->removeOrder($request->get('orderid')); 
-                $response->redirect(['/site/jewel/','box'=>'show'])->send();
+                $mybox->removeOrder($request->get('orderid')); 
+                $response->redirect(['/site/my/','box'=>'show'])->send();
             break;
         }
 
