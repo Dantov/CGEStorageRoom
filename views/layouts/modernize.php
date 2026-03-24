@@ -22,9 +22,6 @@ $totC = '';
 if (isset($controller->totalCount))
     $totC = '('.$controller->totalCount.')';
 
-
-$matSelectedCheck = (bool)($session->get('selectByMatMetal') || $session->get('selectByMatColor') || $session->get('selectByMatProbe'));
-
 $searchFor = $session->has('searchFor')?$session->get('searchFor') : '';
 
 $hashtags = $session->get('selectByHashtags');
@@ -33,6 +30,7 @@ foreach( $allHashtags as &$singlehashtag ){
         $singlehashtag['active'] = true;
     }
 }
+unset($singlehashtag);
 
 $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
 ?>
@@ -123,12 +121,12 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                             <i class="fas fa-angle-left fa-pull-right"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="modeltypeSubmenu1">
-                            <li><a href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>123])?>">Clean</a></li>
-                            <?php foreach( $allCategories as $singleType ): ?>
+                            <li><a href="<?= Url::to(['/search/select','by'=>'category','v'=>123])?>">Clean</a></li>
+                            <?php foreach( $allCategories as $singleCat ): ?>
                                 <li>
-                                    <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'modeltype','v'=>$singleType['name']])?>">
-                                        &nbsp;&nbsp;<i class="fa-solid fa-ellipsis"></i><?=$singleType['name']?>
-                                        <?php if ( $session->get('selectByCategory') == $singleType['name'] ): ?>
+                                    <a class="pt-2 pb-2" href="<?= Url::to(['/search/select','by'=>'category','v'=>$singleCat['name']])?>">
+                                        &nbsp;&nbsp;<i class="fa-solid fa-ellipsis"></i><?=$singleCat['name']?>
+                                        <?php if ( $session->get('selectByCategory') == $singleCat['name'] ): ?>
                                             &nbsp;&nbsp;<i class="fa-solid fa-check"></i>
                                         <?php endif; ?>
                                     </a>
@@ -148,6 +146,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 <li>
                                     <a class="pt-2 pb-2" href="<?= Url::to(['/search/select/','by'=>'hashtag','v'=>$singlehashtag['name']])?>">
                                         &nbsp;&nbsp;<i class="fa-solid fa-ellipsis"></i><?=$singlehashtag['name']?>
+
                                         <?php if (isset($singlehashtag['active'])): ?>
                                             &nbsp;&nbsp;<i class="fa-solid fa-check"></i>
                                         <?php endif;?>

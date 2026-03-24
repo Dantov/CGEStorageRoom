@@ -27,11 +27,7 @@ class SearchController extends GeneralController
         $session->set('SelectByProject','All');
         $session->set('searchFor', '');
         $session->set('selectByHashtag', '');
-        $session->set('selectByModelType', '');
-
-        $session->set('selectByMatColor', '');
-        $session->set('selectByMatMetal', '');
-        $session->set('selectByMatProbe', '');
+        $session->set('selectByCategory', '');
 
         $session->set('selectFromDate','');
         $session->set('selectToDate','');
@@ -76,21 +72,9 @@ class SearchController extends GeneralController
                 if ( $value ) 
                     $this->orderBy($value);
             break;
-            case "modeltype":
+            case "category":
                 if ( $value ) 
-                    $this->SelectBy($value,'selectByModelType', $this->modelTypes);
-            break;
-            case "matname":
-                if ( $value ) 
-                    $this->SelectBy($value, 'selectByMatMetal', $this->modelMaterials['model_material']);
-            break;
-            case "matcolor":
-                if ( $value ) 
-                    $this->SelectBy($value, 'selectByMatColor', $this->modelMaterials['metal_color']);
-            break;
-            case "matprobe":
-                if ( $value ) 
-                    $this->SelectBy($value, 'selectByMatProbe', $this->modelMaterials['metal_probe']);
+                    $this->SelectBy($value,'selectByCategory', $this->categories);
             break;
             
             case "nonpub":
@@ -101,10 +85,6 @@ class SearchController extends GeneralController
                 // Only nonPublished or Deleted can be displyed at one time
                 $session->set('SelectByNonPub', '');
                 $session->set('SelectByDeleted', 1);
-            break;
-
-            case "materials":
-                $this->materialsPurge();
             break;
             case "purgedate":
                 $this->purgeDate();
