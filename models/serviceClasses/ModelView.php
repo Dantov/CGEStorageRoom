@@ -37,7 +37,7 @@ class ModelView extends Common
         //$this->setSizesRange();
         $this->setHashtags();
         //$this->setDataFiles();
-        $this->setJewelStoredModels();
+        $this->setBoxStoredModels();
 
         $this->setProjectID();
         $this->row['isEditBtn'] = $this->drawEditBtn( $this->row['creator_id'] );
@@ -169,14 +169,14 @@ class ModelView extends Common
         }
     }
 
-    protected function setJewelStoredModels()
+    protected function setBoxStoredModels()
     {
-        $jsm = $this->getJewelStoredModels();
+        $jsm = $this->getBoxStoredModels();
 
         $this->row['stored'] = false;
-        foreach ( $jsm as $storedmodel )
+        foreach ( $jsm as $storeditem )
         {
-            if ( $this->row['id'] == $storedmodel['id'] ) {
+            if ( $this->row['id'] == $storeditem['id'] ) {
                 $this->row['stored'] = true;
                 break;
             }

@@ -64,7 +64,7 @@ class AppAsset extends AssetBundle
         $this->js[] = 'js/AlertResponse.js?v='. time();
         $this->js[] = 'js/main/Search.js?v='. time();
         $this->js[] = 'js/layout.js?v='. time();
-        $this->js[] = 'js/JewelBox.js?v='. time();
+        $this->js[] = 'js/MyBox.js?v='. time();
         
         $this->css[] = 'css/styleDB.css?v='. time();
         parent::__construct();

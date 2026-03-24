@@ -18,6 +18,7 @@ $projectName    = $controller->projectName;
 $nonPublished  = $controller->nonPublished;
 $allHashtags   = $controller->hashtags;
 $allCategories = $controller->categories;
+$allStorageRooms = $controller->storagerooms;
 $totC = '';
 if (isset($controller->totalCount))
     $totC = '('.$controller->totalCount.')';
@@ -332,7 +333,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                     <h3 class="sub-title-w3-agileits"><?=User::getFIO()?></h3>
                                 </div>
                                 <div class="dropdown-divider"></div>
-                                <?php if(User::hasPermission('jewelbox')): ?>
+                                <?php if(User::hasPermission('mybox')): ?>
                                     <a href="<?=Url::to(['site/jewel','box'=>'show'])?>" class="dropdown-item mt-2">
                                         <h4><i class="fa-solid fa-box-open"></i> My Box</h4>
                                     </a>
@@ -378,10 +379,39 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                         <tbody>
                             <tr align="center">
                                 <td><img class="mjb-img" src="" width="80rem;"></td>
-                                <td class="mjb-mtype"></td>
-                                <td class="mjb-client"></td>
+                                <td class="mjb-mtype">
+                                </td>
+                                <td class="mjb-client">
+                                    <div class="form-group d-none storageRoomsbox">
+                                        <label for="storageRoomsbox">Storage Room:</label>
+                                        <select class="form-control" id="storageRoomsbox" value="">
+                                        <?php foreach ($allStorageRooms as $stRoom): ?>
+                                            <option style="cursor: pointer;"><?=$stRoom['name']?></option>
+                                        <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group d-none inputShelfBox">
+                                        <label for="inputShelfBox">Shelf:</label>
+                                        <input type="text" class="form-control" id="inputShelfBox"> 
+                                    </div>
+                                </td>
                                 <td>
-                                    <a class="mjb-link btn btn-success btn-sm" href="" role="button">Go</a>
+                                    <a class="mjb-link btn btn-success btn-sm" href="" role="button"><i class="fa-solid fa-eye"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td >located in:</td>
+                                <td colspan="2">
+                                    <div class="form-row">
+                                        <label for="roomboxlocated">Room:</label>
+                                        <input type="text" class="form-control" id="roomboxlocated" value="" disabled>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-row">
+                                        <label for="shelfboxlocated">Shelf:</label>
+                                        <input type="text" class="form-control" id="shelfboxlocated" value="" disabled>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -398,7 +428,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="mjb-submit" class="btn btn-primary">Save</button>
+                <button type="button" id="mjb-submit" class="btn btn-primary">Add to My Box</button>
               </div>
             </div>
           </div>

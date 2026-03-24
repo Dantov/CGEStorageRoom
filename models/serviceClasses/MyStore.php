@@ -13,6 +13,8 @@ class MyStore extends Common
     protected string $modelComment;
     protected int $orderID;
     protected string $price;
+    protected string $room;
+    protected string $shelf;
     protected int $filesAccess;
 
 	public function __construct( array $post )
@@ -45,6 +47,13 @@ class MyStore extends Common
             $this->filesAccess = $access;
         }
 
+        if ( isset($post['room']) ) {
+            $this->room = strip_tags(trim($post['room']));
+        }
+        if ( isset($post['shelf']) ) {
+            $this->shelf = strip_tags(trim($post['shelf']));
+        }
+
         parent::__construct();
 	}
 
@@ -53,7 +62,7 @@ class MyStore extends Common
         $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
         if ($jb->exists()) {
             $jb =$jb->one();
-            return count(json_decode($jb->storedmodels,true)??[]);
+            return count(json_decode($jb->storeditems,true)??[]);
         } 
         return 0;
     }
@@ -67,31 +76,47 @@ class MyStore extends Common
         return 0;
     }
 
-    public function add()
+    public function add() : bool
     {
-        $jbt = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
-        $jbModels = [];
-        if ($jbt->exists())
+        $itemData = Stock::find($this->modelID);
+        if (!$itemData->exists()) false;
+        $itemData = $itemData->one();
+
+        // Check if already reserved
+        if ( $itemData->reserv_user_id ) return false;
+
+        // If all good reserv this item
+        $itemData->reserv_user_id = User::getID();
+        $itemData->reserv_user_name = User::getFIO();
+        $reserved = $itemData->save(false);
+        if ( !$reserved ) return false;
+
+        $mybox = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
+        $boxItems = [];
+        if ($mybox->exists())
         {
-            $jbt = $jbt->one();
-            $jbModels = json_decode($jbt->storedmodels,true)??[];
+            $mybox = $mybox->one();
+            $boxItems = json_decode($mybox->storeditems,true)??[];
         } else {
-            $jbt = new Mybox();    
+            $mybox = new Mybox();    
         }
 
-        $jbModel = [
+        $boxItem = [
             'id' => $this->modelID,
             'comment' => $this->modelComment,
-            'price' => '...',
-            'access' => '',
+            'username' => User::getFIO(),
+            'room' => $itemData->storageroom,
+            'shelf' => $itemData->shelfnum,
+            'grabbingdate' => date('Y-m-d'),
+            'price' => '',
         ];
-        $jbModels[] = $jbModel;
+        $boxItems[] = $boxItem;
         
-        $jbt->storedmodels = json_encode($jbModels,true);
-        $jbt->userid = User::getID();
-        $jbt->lastdate = date('Y-m-d');
+        $mybox->storeditems = json_encode($boxItems,true);
+        $mybox->userid = User::getID();
+        $mybox->lastdate = date('Y-m-d');
 
-        return $jbt->save(false);
+        return $mybox->save(false);
     }
 
     public function getOrderStatus( int $id ) : int
@@ -121,8 +146,8 @@ class MyStore extends Common
         $this->setIdAsKeys($jb);
 
         foreach( $jb as &$order ) {
-            $order['storedmodels'] = $this->proceedStoredModels(json_decode($order['storedmodels'],true)??[]);
-            $this->setIdAsKeys($order['storedmodels']);
+            $order['storeditems'] = $this->proceedStoredModels(json_decode($order['storeditems'],true)??[]);
+            $this->setIdAsKeys($order['storeditems']);
             
             $order['userdata'] = $this->getUserDataByID($order['userid']);
             $order['lastdate'] = $this->dateConvert($order['lastdate']);
@@ -143,13 +168,13 @@ class MyStore extends Common
         $jb = $jb->all();
         
         $resp = [
-            'storedmodels' => [],
+            'storeditems' => [],
             'statuses' => [],
         ];
         foreach( $jb as $num => $orders )
         {
-            $storedmodels = json_decode($orders->storedmodels,true)??[];
-            $resp['storedmodels'][$orders->id] = $this->proceedStoredModels($storedmodels);
+            $storedmodels = json_decode($orders->storeditems,true)??[];
+            $resp['storeditems'][$orders->id] = $this->proceedStoredModels($storedmodels);
             $resp['statuses'][$orders->id] = $orders->status;
         }
         return $resp;
@@ -170,13 +195,13 @@ class MyStore extends Common
                 if ( $model['id'] === $sm['id'] ){
                     $model['comment'] = $sm['comment'];
                     $model['storeprice'] = $sm['price'];// round($model['model_cost'] / 2); //
-                    $model['access'] = $sm['access'];// round($model['model_cost'] / 2); //
+                    //$model['access'] = $sm['access'];// round($model['model_cost'] / 2); //
                 }
             }
             foreach( $model['images'] as $img ) {
                 if ( (int)$img['status'] === 1 ){
 
-                    $model['mainimage'] = "stock/".Common::modelPath($model['client'],$model['id'])."/images/".$img['name'];
+                    $model['mainimage'] = "stock/".Common::modelPath($model['project'],$model['id'])."/images/".$img['name'];
                     break;
                 }
             }
@@ -192,8 +217,8 @@ class MyStore extends Common
         {
             foreach ( $allClients as $clientTmpl )
             {
-                if ( $model['client'] == $clientTmpl['name'] ){
-                    $model['client'] = $clientTmpl['secondname'];
+                if ( $model['project'] == $clientTmpl['name'] ){
+                    $model['project'] = $clientTmpl['secondname'];
                     break;
                 }
             }
@@ -205,7 +230,7 @@ class MyStore extends Common
         $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$this->orderID]);//andWhere(['status'=>0]);
         if (!$jb->exists()) return false;
         $jb = $jb->one();
-        $storedmodels = json_decode($jb->storedmodels,true)??[];
+        $storedmodels = json_decode($jb->storeditems,true)??[];
 
         $flag = false;
         foreach( $storedmodels as $key => &$storedmodel ) {
@@ -217,7 +242,7 @@ class MyStore extends Common
         }
 
         if ($flag) {
-            $jb->storedmodels = json_encode($storedmodels,true);
+            $jb->storeditems = json_encode($storedmodels,true);
             $jb->lastdate = date('Y-m-d');
             
             return $jb->save(false);    
@@ -225,54 +250,44 @@ class MyStore extends Common
         return false;
     }
 
-    public function remove( int $id, int $orderid ) : bool
+    public function returnItem() : bool
     {
-        if ( $id < 1 || $id > PHP_INT_MAX ) return false;
-        if ( $orderid < 1 || $orderid > PHP_INT_MAX ) return false;
+        //if ( $id < 1 || $id > PHP_INT_MAX ) return false;
+        //if ( $orderid < 1 || $orderid > PHP_INT_MAX ) return false;
 
-        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
-        if ( !$jb->exists() ) return false;
-        $jb = $jb->one();
-        $storedmodels = json_decode($jb->storedmodels,true)??[];
+        $box = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$this->orderID]);
+        if ( !$box->exists() ) return false;
+        $box = $box->one();
+        $storeditems = json_decode($box->storeditems,true)??[];
 
         $flag = false;
-        foreach( $storedmodels as $key => $storedmodel ) {
-            if ( (int)$storedmodel['id'] === $id ) {
-                unset($storedmodels[$key]);
+        foreach( $storeditems as $key => $storeditem ) {
+            if ( (int)$storeditem['id'] === $this->modelID ) {
+                unset($storeditems[$key]);
                 $flag = true;
                 break;
             }
         }
 
         if ($flag) {
-            $jb->storedmodels = json_encode($storedmodels,true);
-            $jb->lastdate = date('Y-m-d');
-            
-            return $jb->save(false);    
+            $box->storeditems = json_encode($storeditems,true);
+            $box->lastdate = date('Y-m-d');
+            $returned = $box->save(false);
         }
 
-        return false;
-    }
+        if ($returned)
+        {
+            $itemData = Stock::find($this->modelID);
+            if (!$itemData->exists()) return false;
+            $itemData = $itemData->one();
 
-    public function sendOrder( int $orderid )
-    {
-        if ( $orderid < 1 || $orderid > PHP_INT_MAX ) return false;
-        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['id'=>$orderid]);
-        if (!$jb->exists()) return false;
-        $jb = $jb->one();
-        
-        $count = count(json_decode($jb->storedmodels,true)??[]);//$this->getModelsCount();
-        $sended = Yii::$app->mailer->compose()
-            ->setFrom('from@domain.com')
-            ->setTo('vady365@yahoo.com')
-            ->setSubject('PJ3DB - Новый Заказ № ' . $jb->id . ' от ' . User::getFIO())
-            ->setTextBody('Новый Заказ № ' . $jb->id . ' от ' . User::getFIO() . '! На общее кол-во ' . $count . 'шт.' )
-            ->setHtmlBody('Новый Заказ № <i>' . $jb->id . '</i> от ' .'<b>'.User::getFIO().'</b>'.'! На общее кол-во ' . $count . 'шт.' )
-            ->send();
-
-        if ( $sended ) {
-            $jb->status = 1;
-            return $jb->save(false);
+            // If all good unreserv this item
+            $itemData->storageroom = $this->room;
+            $itemData->shelfnum = $this->shelf;
+            
+            $itemData->reserv_user_id = null;
+            $itemData->reserv_user_name = null;
+            return $itemData->save(false);
         }
 
         return false;
@@ -287,6 +302,7 @@ class MyStore extends Common
 
         if ($jb->delete())
         {
+            /*
             $sended = Yii::$app->mailer->compose()
             //->setFrom('insidemail@powered-jewelry-base.com')
             ->setTo('vady365@yahoo.com')
@@ -294,6 +310,7 @@ class MyStore extends Common
             ->setTextBody('Заказ № ' . $jb->id . ' от ' . User::getFIO() . ' УДАЛЕН!')
             ->setHtmlBody('Заказ № <i>' . $jb->id . '</i> от ' .'<b>'.User::getFIO().'</b> УДАЛЕН!')
             ->send();
+            */
         }
     }
 
@@ -304,7 +321,7 @@ class MyStore extends Common
         if ( !$jb->exists() ) return false;
         $jb = $jb->one();
         $userID = $jb->userid;
-        $storedmodels = json_decode($jb->storedmodels,true) ?? [];
+        $storedmodels = json_decode($jb->storeditems,true) ?? [];
         $found = false;
         $allIDs = [];
         foreach ($storedmodels as &$modeldata) 
@@ -339,7 +356,7 @@ class MyStore extends Common
             if ( $flagStatus2 ) $jb->status = 2;
         }
 
-        $jb->storedmodels = json_encode($storedmodels,true);
+        $jb->storeditems = json_encode($storedmodels,true);
         $jb->save(false);    
 
         // User Part 
@@ -367,7 +384,7 @@ class MyStore extends Common
         if ( !$jb->exists() ) return false;
         $jb = $jb->one();
 
-        $storedmodels = json_decode($jb->storedmodels,true) ?? [];
+        $storedmodels = json_decode($jb->storeditems,true) ?? [];
         $flag = false;
         foreach( $storedmodels as $key => &$storedmodel ) {
             if ( (int)$storedmodel['id'] === $this->modelID ) {
@@ -377,7 +394,7 @@ class MyStore extends Common
             }
         }
         if ($flag) {
-            $jb->storedmodels = json_encode($storedmodels,true);
+            $jb->storeditems = json_encode($storedmodels,true);
             $jb->lastdate = date('Y-m-d');
             return $jb->save(false);    
         }

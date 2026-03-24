@@ -134,21 +134,11 @@ class Common
 	{
 		return Service_data::find()->where(['tab'=>'category'])->asArray()->orderBy('name')->all();
 	}
-
-	/*
-	public function getAllMaterials() : array
+	public function getStorageRooms() : array
 	{
-		$mats = Service_data::find()->where(['in','tab',['metal_color','model_material','metal_probe']])->asArray()->orderBy('name')->all();
-		$res = [ 'metal_color'=>[], 'model_material'=>[],'metal_probe'=>[] ];
-		foreach ($mats as $mat)
-		{
-			if ( $mat['tab'] == 'metal_color' ) $res['metal_color'][] = $mat;
-			if ( $mat['tab'] == 'model_material' ) $res['model_material'][] = $mat;
-			if ( $mat['tab'] == 'metal_probe' ) $res['metal_probe'][] = $mat;
-		}
-		return $res;
+		return Service_data::find()->where(['tab'=>'storageroom'])->asArray()->orderBy('name')->all();
 	}
-	*/
+
 
 	public function getNonPublished()
 	{
@@ -222,19 +212,19 @@ class Common
    		return false;
     }
 
-	public function getJewelStoredModels() : array
+	public function getBoxStoredModels() : array
 	{
 		$jb = Mybox::find()->where(['userid'=>User::getID()]);
 		if (!$jb->exists()) return [];
         $jb = $jb->all();
 
-        $storedmodels = [];
+        $storeditems = [];
         foreach( $jb as $ordID => $orderData )
         {
-        	$om = json_decode($orderData->storedmodels,true);
-        	$storedmodels = array_merge($storedmodels, $om);
+        	$om = json_decode($orderData->storeditems,true);
+        	$storeditems = array_merge($storeditems, $om);
         }
-        return $storedmodels;
+        return $storeditems;
 	}
 
 	public function setIdAsKeys( array &$array )

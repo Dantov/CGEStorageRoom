@@ -312,11 +312,11 @@ class SiteController extends GeneralController
 
                 exit(json_encode( $mybox->edit() ));
             break;
-            case "remove":
+            case "return":
                 if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                $mybox->remove($request->get('id'),$request->get('orderid')); 
+                $mybox->returnItem(); 
                 $response->redirect(['/site/my/','box'=>'show'])->send();
             break;
             case "sendorder":

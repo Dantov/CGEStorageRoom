@@ -1,5 +1,5 @@
 "use strict";
-class JewelBox 
+class MyBox 
 {
     constructor()
     {
@@ -14,7 +14,7 @@ class JewelBox
         if ( this.jbBtnV ) this.btnsClickApply(this.jbBtnV, "add");
 
         this.editBtns = document.querySelectorAll('.editbtnJewelBox');
-        if ( this.editBtns ) this.btnsClickApply(this.editBtns, "edit");
+        if ( this.editBtns ) this.btnsClickApply(this.editBtns, "return");
 
         this.openBtns = document.querySelectorAll('.JewelBoxOpenModel');
         if ( this.openBtns ) this.btnsClickApply(this.openBtns, "openmodel");
@@ -30,7 +30,8 @@ class JewelBox
             modelID: '',
             comment: '',
             price: '',
-            access: '',
+            room: '',
+            shelf: '',
         };
     }
 
@@ -60,34 +61,45 @@ class JewelBox
 
         let modelData = btn.firstElementChild; //input
 
-        let modelLink = modelData.getAttribute('data-link');
         let modelImg = modelData.getAttribute('data-img');
         let modelN3d = modelData.getAttribute('data-n3d');
         let modelType = modelData.getAttribute('data-mtype');
         let modelClient = modelData.getAttribute('data-client');
 
         let modal = document.getElementById('jewel-box-modal');
-        let jbcomment = "";
-        let label = "";
 
-        if ( condition == "add" ) label = "Добавить в шкатулку: ";
-        if ( condition == "edit" ) {
-            jbcomment = btn.parentElement.parentElement.querySelector('.jbcomment').innerHTML;
-            label = "Редактировать: ";
+        if ( condition == "add" ) 
+        {
+            modal.querySelector('#jbModalLabel').innerHTML = "Add ";
+            modal.querySelector('.mjb-img').src = modelImg;
+            modal.querySelector('.mjb-mtype').innerHTML = modelN3d + " / " + modelType;
+            modal.querySelector('.mjb-client').innerHTML = modelClient;
+            modal.querySelector('#mjb-commenttext').innerHTML = "";
+            modal.querySelector('.mjb-link').href = modelData.getAttribute('data-link');
+
+            modal.querySelector('#roomboxlocated').value = modelData.getAttribute('data-room');
+            modal.querySelector('#shelfboxlocated').value = modelData.getAttribute('data-shelf');
         }
-        if ( condition == "openallmodels" ) {
-            label = "Открыть доступ для всех моделей?";
+
+        if ( condition == "return" )
+        {
+            modal.querySelector('#jbModalLabel').innerHTML = "Set shelf num and room or leave it in prev state";
+            modal.querySelector('.mjb-img').src = modelImg;
+            modal.querySelector('.mjb-mtype').innerHTML = modelData.getAttribute('data-name');
+
+            modal.querySelector('.mjb-client').querySelector('#storageRoomsbox').value = modelData.getAttribute('data-room');
+            modal.querySelector('.mjb-client').querySelector('#inputShelfBox').value = modelData.getAttribute('data-shelf');
+            modal.querySelector('.mjb-client').querySelector('.storageRoomsbox').classList.remove('d-none');
+            modal.querySelector('.mjb-client').querySelector('.inputShelfBox').classList.remove('d-none');
+
+            if (modal.querySelector('.mjb-link')) 
+                modal.querySelector('.mjb-link').remove();
+
+            if (modal.querySelector('#mjb-commenttext'))
+                modal.querySelector('#mjb-commenttext').parentElement.remove();
+
+            modal.querySelector('#mjb-submit').innerHTML = "Put Back";
         }
-        if ( condition == "openmodel" ) {
-            label = "Открыть доступ для этой модели?";
-        }
-        
-        modal.querySelector('#jbModalLabel').innerHTML = label;
-        modal.querySelector('.mjb-img').src = modelImg;
-        modal.querySelector('.mjb-mtype').innerHTML = modelN3d + " / " + modelType;
-        modal.querySelector('.mjb-client').innerHTML = modelClient;
-        modal.querySelector('#mjb-commenttext').innerHTML = jbcomment;
-        modal.querySelector('.mjb-link').href = modelLink;
 
         if ( condition == "openallmodels" )
             modal.querySelector('.table-responsive').remove();
@@ -103,6 +115,12 @@ class JewelBox
             let comment =  modal.querySelector('#mjb-commenttext');
             if ( comment )
                 self.queryObj.comment = comment.value;
+
+            if ( condition == "return" )
+            {
+                self.queryObj.room = modal.querySelector('.mjb-client').querySelector('#storageRoomsbox').value;
+                self.queryObj.shelf = modal.querySelector('.mjb-client').querySelector('#inputShelfBox').value;
+            }
             
             self.pushJBData(condition);
         };
@@ -113,7 +131,7 @@ class JewelBox
     pushJBData(condition) {
         let self = this;
         $.ajax({
-            url: "/site/jewel?box=" + condition,
+            url: "/site/my?box=" + condition,
             type: 'POST',
             data: self.queryObj,
             dataType:"json",
@@ -133,7 +151,7 @@ class JewelBox
         this.queryObj.orderid = input.getAttribute('data-orderid');
         this.queryObj.price = input.value;
         $.ajax({
-            url: "/site/jewel?box=setmodelprice",
+            url: "/site/my?box=setmodelprice",
             type: 'POST',
             data: self.queryObj,
             dataType:"json",

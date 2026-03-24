@@ -15,100 +15,64 @@ $this->title = 'Box ' . User::getFIO();
     </div>
 <?php endif; ?>
 
-<?php foreach( $allOrders as $orderID => $orderData ): ?>
-
-<?php $orderStatus = (int)$orderData['status']?>
-<?php $storedModels = $orderData['storedmodels']?>
-<?php $userData = $orderData['userdata']?>
-<div class="row mb-2">
-    <div class="col-xs-12">
-        <button class="btn btn-<?=($orderStatus===2)?"secondary":"info"?> btn-block" type="button" data-toggle="collapse" data-target="#OrderCollapse-<?=$orderID?>" aria-expanded="false" aria-controls="OrderCollapse-<?=$orderID?>">
-            <h5 class="tittle-w3-agileits mb-2 pt-2">Заказ №<?=$orderID?> от <?=$orderData['lastdate']?>
-                <?php if( $orderStatus === 0 ): ?>
-                <span class="badge badge-pill badge-primary">Waiting...</span>
-                <?php endif; ?>
-                <?php if( $orderStatus === 1 ): ?>
-                <span class="badge badge-pill badge-primary">Сформирован и отправлен!</span>
-                <?php endif; ?>
-                <?php if( $orderStatus === 2 ): ?>
-                <span class="badge badge-pill badge-warning">Выполнен!</span>
-                <?php endif; ?>
-            </h5>
-        </button>
-    </div>
-</div>
-<div class="collapse" id="OrderCollapse-<?=$orderID?>">
 <div class="outer-w3-agile col-xl pt-3 pb-2 mb-3">
     <div class="work-progres">
         <div class="row mb-2">
             <div class="col-sm-6 col-xs-12">
-                <?php if ( $orderStatus == 0 ):?>
-                <a type="button" href="<?=Url::to(['site/jewel/','box'=>'sendorder','orderid'=>$orderID])?>" class="btn btn-success btn-sm btn-block"><i class="fa-regular fa-paper-plane"></i> Сформировать заказ (всего моделей: <?=count($storedModels)?>)</a>
-                <?php elseif($orderStatus == 1):?>
-                <span class="text-danger">Заказ сформирован и отправлен! <br/>Свяжитесь с администратором любым известным вам способом.</span>
-                <?php endif;?>
             </div>
-            <?php if($orderStatus !== 2):?>
             <div class="col-sm-6 col-xs-12">
-                <a type="button" href="<?=Url::to(['site/jewel/','box'=>'removeorder','orderid'=>$orderID])?>" class="btn btn-outline-danger btn-sm btn-block"><i class="fa-regular fa-calendar-xmark"></i> Удалить заказ (всего моделей: <?=count($storedModels)?>)</a>
+                <a type="button" href="<?=Url::to(['site/my/','box'=>'putallback'])?>" class="btn btn-outline-danger btn-sm btn-block"><i class="fa-solid fa-cubes-stacked"></i> Put all items back in Store</a>
             </div>
-            <?php endif;?>
         </div>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr align="center">
-                        <th>Изделие</th>
-                        <th>Вид модели</th>
-                        <th>Клиент</th>
-                        <th>Ссылка</th>
-                        <th>Комментарий</th>
-                        <th></th>
-                        <?php $priceTotal = 0;?>
-                        <?php foreach( $storedModels as $stM ):?>
-                            <?php $priceTotal += (int)$stM['storeprice'];?>
-                        <?php endforeach;?>
-                        <th>Стоимость ( <?=$priceTotal?> )</th>
+                        <th>Photo</th>
+                        <th>Name/Category</th>
+                        <th>Project</th>
+                        <th>View Link</th>
+                        <th>Comment</th>
+                        <th>Was present in Room/Shelf</th>
+                        <th>Price ()</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach( $storedModels as $k => $storedModel ):?>
-                    <tr align="center">
-                        <td><img src="<?="/" . $storedModel['mainimage']?>" width="70 rem;"></td>
-                        <td><?=$storedModel['model_type']?></td>
-                        <td><?= htmlentities($storedModel['client'])?></td>
-                        <td>
-                            <a class="btn btn-outline-primary btn-sm" href="<?=Url::to(['/site/view/','id'=>$storedModel['id']])?>" role="button">Перейти</a>
-                        </td>
-                        <td>
-                            <?php if ( User::hasFilesAccess( $storedModel['id'] ) ):?>
-                            <h5 data-toggle="tooltip" title="Files Opened" ><span class="badge badge-success"><i class="fa-solid fa-check-to-slot"></i></span> </h5>
-                            <?php endif;?>
-                            <h5><span class="badge badge-pill badge-secondary jbcomment"><?=$storedModel['comment']?></span></h5>
-                        </td>
-                        <td>
-                            <?php if($orderStatus !== 2):?>
-                            <button type="button" data-orderid="<?=$orderID?>" data-id="<?=$storedModel['id']?>" class="btn btn-sm btn-dark editbtnJewelBox" title="Редактировать">
-                                <input class="editJBdata" type="hidden" data-img="<?="/" . $storedModel['mainimage']?>" data-link="<?=Url::to(['/site/view/','id'=>$storedModel['id']])?>" data-n3d="<?=$storedModel['number_3d']?>" data-mtype="<?=$storedModel['model_type']?>" data-client="<?=htmlentities($storedModel['client'])?>">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                            <?php endif;?>
-                        </td>
-                        <td>
-                            <h5><span class="badge badge-warning"><?=$storedModel['storeprice']?></span></h5>
-                        </td>
-                        <td>
-                            <?php if ( $orderStatus !== 2 ):?>
-                            <a type="button" href="<?=Url::to(['site/jewel','box'=>'remove','id'=>$storedModel['id'],'orderid'=>$orderID])?>" class="btn btn-sm btn-danger" title="Удалить"><i class="fa-solid fa-xmark"></i></a>
-                            <?php endif;?>
-                        </td>
-                    </tr>
-                    <?php endforeach;?>
+<?php foreach( $allOrders as $orderID => $orderData ): ?>
+
+<?php $orderStatus = (int)$orderData['status']?>
+<?php $storeditems = $orderData['storeditems']?>
+<?php $userData = $orderData['userdata']?>
+
+    <?php foreach( $storeditems as $k => $storedItem ):?>
+    <tr align="center">
+        <td><img src="<?="/" . $storedItem['mainimage']?>" width="70 rem;"></td>
+        <td><?=$storedItem['item_name'] . " / " .$storedItem['item_category']?></td>
+        <td><?= htmlentities($storedItem['project'])?></td>
+        <td>
+            <a class="btn btn-outline-primary btn-sm" href="<?=Url::to(['/site/view/','id'=>$storedItem['id']])?>" role="button"><i class="fa-solid fa-eye"></i></a>
+        </td>
+        <td>
+            <h5><span class="badge badge-pill badge-secondary jbcomment"><?=$storedItem['comment']?></span></h5>
+        </td>
+        <td>
+            <h5><span class="badge badge-pill badge-info"><?=$storedItem['storageroom']?></span> / <span class="badge badge-pill badge-warning"><?=$storedItem['shelfnum']?></span></h5>
+        </td>
+        <td>
+            <h5><span class="badge badge-warning"><?=$storedItem['storeprice']?></span></h5>
+        </td>
+        <td>
+            <button type="button" data-orderid="<?=$orderID?>" data-id="<?=$storedItem['id']?>" class="btn btn-sm btn-dark editbtnJewelBox" title="Put back">
+                <input class="editJBdata" type="hidden" data-img="<?="/" . $storedItem['mainimage']?>" data-link="<?=Url::to(['/site/view/','id'=>$storedItem['id']])?>" data-name="<?=$storedItem['item_name']?>" data-room="<?=$storedItem['storageroom']?>" data-shelf="<?=$storedItem['shelfnum']?>">
+                <i class="fa-solid fa-rotate-left"></i>Put back
+            </button>
+        </td>
+    </tr>
+    <?php endforeach;?>
+<?php endforeach;?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-</div>
-<?php endforeach;?>

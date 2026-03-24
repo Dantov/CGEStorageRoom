@@ -20,18 +20,22 @@ $this->registerJs($imgJs);
 $modelDeleted = ((int)$model['item_status']===2);
 $modelNonPublished = ((int)$model['item_status']===0);
 $modelPublished = ((int)$model['item_status']===1);
-
 ?>
 
 <div class="row justify-content-center bg-light mb-2">
-    <div class="col-sm-12">
+    <div class="col-sm-12 pl-0">
         <?php if ( $modelPublished ):?>
-            <?php if ( User::hasPermission('jewelbox') && !User::isAdmin() ):?>
-            <div class="d-flex justify-content-between">
-                <?php if ( User::hasFilesAccess($model['id'])  ):?>
-                <button type="button" class="btn btn-success btn-lg btn-block mt-2">Можно скачать файлы</button>
-                <?php elseif( $model['stored'] ):?>
-                <button type="button" class="btn btn-info btn-lg btn-block mt-2">Item already in My Box</button>
+            <?php if ( User::hasPermission('mybox') && !User::isAdmin() ):?>
+            <div class="d-flex row justify-content-between">
+                <?php if( $model['stored'] ):?>
+                <div class="col-sm-4">
+                    <div class="alert alert-primary mb-0" role="alert">This item is in your box.</div>
+                </div>
+                <div class="col-sm-8">
+                    <button type="button" data-id="<?=$model['id']?>" class="btn btn-info btn-lg btn-block putback">
+                        Put Back
+                    </button>
+                </div>
                 <?php else:?>
                 <button type="button" data-id="<?=$model['id']?>" class="btn btn-primary btn-lg btn-block mt-2 jewelboxBtnView">
                     <input class="addJBdata" type="hidden" data-img="/stock/<?=$modelPath?>/images/<?=$model['mainimage']?>" data-link="<?=Url::to(['site/view','id'=>$model['id'] ])?>" data-n3d="<?=$model['item_name']?>" data-mtype="<?=$model['item_category']?>" data-client="<?=htmlentities($model['project'])?>">
@@ -84,19 +88,19 @@ $modelPublished = ((int)$model['item_status']===1);
     <div class="col-sm-12 col-md-6 bg-light position-relative" id="descriptions">
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fa-solid fa-user-tie" data-toggle="tooltip" data-placement="top" title="Project"></i>
+                <i class="fa-brands fa-r-project" data-toggle="tooltip" data-placement="top" title="Project"></i>
                 <span class="d-none d-lg-inline">Project:</span>
             </div>
             <div class="p-1 bg-light" id="project">
-                <b><i>
-                    <a class="text-primary" href="<?=Url::to(['search/select','by'=>'project','v'=>$model['projectID']??0 ])?>" id="collection"><?=$model['project']?>
-                    </a>
-                </i></b>
+                <b>
+                    <i><a class="text-primary" href="<?=Url::to(['search/select','by'=>'project','v'=>$model['projectID']??0 ])?>" id="collection"><?=$model['project']?>
+                    </a></i>
+                </b>
             </div>
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fa-solid fa-asterisk" data-toggle="tooltip" data-placement="top" title="Name"></i>
+                <i class="fa-solid fa-align-justify" data-toggle="tooltip" data-placement="top" title="Name"></i>
                 <span class="d-none d-lg-inline">Name:</span>
             </div>
             <div class="p-1 bg-light" id="num3d"><b><?=$model['item_name']?></b></div>
@@ -110,21 +114,21 @@ $modelPublished = ((int)$model['item_status']===1);
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fas fa-user-cog" data-toggle="tooltip" data-placement="top" title="Item category"></i>
+                <i class="fa-solid fa-layer-group" data-toggle="tooltip" data-placement="top" title="Item category"></i>
                 <span class="d-none d-lg-inline">Item category</span>
             </div>
             <div class="p-1 bg-light" id="modeller3d"><b><?=$model['item_category']?></b></div>
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="far fa-eye" data-toggle="tooltip" data-placement="top" title="Quantity"></i>
+                <i class="fa-solid fa-arrow-up-1-9" data-toggle="tooltip" data-placement="top" title="Quantity"></i>
                 <span class="d-none d-lg-inline">Quantity</span>
             </div>
             <div class="p-1 bg-light" id="modelType"><b><?=$model['item_quantity']?></b></div>
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fas fa-balance-scale-left"></i>
+                <i class="fa-solid fa-ruler-combined"></i>
                 <span class="d-none d-lg-inline">Item size mm</span>
             </div>
             <div class="p-1 bg-light">
@@ -134,8 +138,8 @@ $modelPublished = ((int)$model['item_status']===1);
         <?php if (User::hasPermission('model_price')): ?>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span class="d-none d-lg-inline">Price €</span>
+                <i class="fa-solid fa-euro-sign"></i>
+                <span class="d-none d-lg-inline">Price</span>
             </div>
             <div class="p-1 bg-light">
                 <b><span><?=$model['item_price']?></span></b>
@@ -144,8 +148,8 @@ $modelPublished = ((int)$model['item_status']===1);
         <?php endif;?>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fa-solid fa-ring"></i>
-                <span class="d-none d-lg-inline">Price for rent €</span>
+                <i class="fa-solid fa-euro-sign"></i>
+                <span class="d-none d-lg-inline">Price for rent</span>
             </div>
             <div class="p-1 bg-light">
                 <b><span><?=$model['item_price_rent']?></span></b>
@@ -153,7 +157,7 @@ $modelPublished = ((int)$model['item_status']===1);
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
-                <i class="fa-solid fa-ring"></i>
+                <i class="fa-solid fa-house"></i>
                 <span class="d-none d-lg-inline">Storage Room / Shelf Number</span>
             </div>
             <div class="p-1 bg-light">

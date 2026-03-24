@@ -111,5 +111,5 @@ $(document).ready(function () {
 		}
 	}
 
-	let jewelbox = new JewelBox();
+	let mybox = new MyBox();
  });

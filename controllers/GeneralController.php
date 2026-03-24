@@ -34,7 +34,7 @@ class GeneralController extends Controller
     public array $projects;
     public array $hashtags;
     public array $categories;
-    //public array $modelMaterials;
+    public array $storagerooms;
     public array $nonPublished;
     public string $clientHidedName;
     public string $projectName;
@@ -66,7 +66,7 @@ JS;
             $this->projects = $m->getProjects();
             $this->hashtags = $m->getAllHashtags();
             $this->categories = $m->getAllCategories();
-            //$this->modelMaterials = $m->getAllMaterials();
+            $this->storagerooms = $m->getStorageRooms();
             $this->nonPublished = $m->getNonPublished();
             $this->projectName = $m->getProjectName();
         } catch (e) {
