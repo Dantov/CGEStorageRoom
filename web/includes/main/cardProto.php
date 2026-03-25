@@ -1,8 +1,10 @@
 <?php
 use yii\helpers\Url;
 use app\models\{User,Common};
+use app\models\serviceClasses\MyStore;
 $quantity = $model['item_quantity'] > 0;
-$reserved = $model['reserv_user_id']??false;
+//$reserved = $model['reserv_user_id']??false;
+$reserved = MyStore::hasItemInMyBox($model['id']);
 
 $bgcolor = 'secondary';
 $mainTitle = "";
@@ -32,7 +34,7 @@ $clientName = empty($model['project']) ? '<b class="text-muted">empty</b>' : htm
                     <i class="fas fa-pencil-alt"></i>
                 </a>
                 <?php endif; ?>
-                <?php if ( User::hasPermission('mybox') && $quantity && !User::isAdmin() ): ?>
+                <?php if ( User::hasPermission('mybox') && $quantity && !$reserved && !User::isAdmin() ): ?>
                 <button class="btn btn-primary btn-sm jewelboxBtnMain" role="button" data-id="<?=$model['id']?>" data-placement="bottom" title="Add to Box">
                     <input class="addJBdata" type="hidden" data-img="/stock/<?=Common::modelPath($model['project'],$model['id'])?>/images/<?=$imgname?>" data-link="<?=Url::to(['site/view','id'=>$model['id'] ])?>" data-n3d="<?=$model['item_name']?>" data-mtype="<?=$model['item_category']?>" data-client="<?=htmlentities($model['project'])?>" data-room="<?=$model['storageroom']?>" data-shelf="<?=$model['shelfnum']?>">
                     <i class="fa-solid fa-dolly"></i>

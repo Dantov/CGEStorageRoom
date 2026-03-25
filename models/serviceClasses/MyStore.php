@@ -75,20 +75,38 @@ class MyStore extends Common
         } 
         return 0;
     }
+    public function getOrderStatus( int $id ) : int
+    {
+        if ( $id < 1 || $id > PHP_INT_MAX ) return false;
+        $jb = Mybox::find()->select(['id','status'])->where(['userid'=>User::getID()])->andWhere(['id'=>$id]);
+        if (!$jb->exists()) return false;
+        $jb = $jb->one();
 
-    public function add() : bool
+        return $jb->status;
+    }
+    public static function getOrderID( int $modelID = 0 ) : int
+    {
+        $jb = Mybox::find()->select(['id'])->where(['userid'=>User::getID()]);
+        if (!$jb->exists()) return false;
+        $jb = $jb->one();
+
+
+
+        return $jb->id;
+    }
+
+    public function addItem() : bool
     {
         $itemData = Stock::find()->where(['id'=>$this->modelID]);
         if (!$itemData->exists()) false;
         $itemData = $itemData->one();
 
-        // Check if already reserved
-        if ( $itemData->reserv_user_id ) return false;
+        // Check if
         if ( $itemData->item_quantity < 1 ) return false;
 
         // If all good reserv this item
-        $itemData->reserv_user_id = User::getID();
-        $itemData->reserv_user_name = User::getFIO();
+        //$itemData->reserv_user_id = User::getID();
+        //$itemData->reserv_user_name = User::getFIO();
         $itemData->item_quantity = $itemData->item_quantity-1;
         $reserved = $itemData->save(false);
         if ( !$reserved ) return false;
@@ -131,14 +149,21 @@ class MyStore extends Common
         return false;
     }
 
-    public function getOrderStatus( int $id ) : int
+    public static function hasItemInMyBox( int $itemID ) : bool
     {
-        if ( $id < 1 || $id > PHP_INT_MAX ) return false;
-        $jb = Mybox::find()->select(['id','status'])->where(['userid'=>User::getID()])->andWhere(['id'=>$id]);
-        if (!$jb->exists()) return false;
-        $jb = $jb->one();
+        $mybox = Mybox::find()->where(['userid'=>User::getID()]);
+        $boxItems = [];
+        if (!$mybox->exists()) return false;
+        
+        $mybox = $mybox->one();
+        $boxItems = json_decode($mybox->storeditems,true)??[];
+        
+        foreach ($boxItems as $boxedItem) 
+        {
+            if ( (int)$boxedItem['id'] === $itemID ) return true;
+        }
 
-        return $jb->status;
+        return false;
     }
 
     public function getAllOrders( int $userID = 0 ) : array
@@ -158,38 +183,20 @@ class MyStore extends Common
         $this->setIdAsKeys($jb);
 
         foreach( $jb as &$order ) {
+            //debug(json_decode($order['storeditems'],true),'storeditems',1);
             $order['storeditems'] = $this->proceedStoredModels(json_decode($order['storeditems'],true)??[]);
+
+            //debug($order['storeditems'],'storeditems');
             $this->setIdAsKeys($order['storeditems']);
-            
+
+            //debug($order['storeditems'],'setIdAsKeys',1);
+
             $order['userdata'] = $this->getUserDataByID($order['userid']);
             $order['lastdate'] = $this->dateConvert($order['lastdate']);
         }
 
+        //debug($jb,'$jb',1); 
         return $jb;
-    }
-
-    /*
-     * OLD
-     */
-    public function getStoredModels() : array
-    {
-        $jb = Mybox::find()->where(['userid'=>User::getID()]);
-        $storedmodels = [];
-        if (!$jb->exists()) return [];
-        
-        $jb = $jb->all();
-        
-        $resp = [
-            'storeditems' => [],
-            'statuses' => [],
-        ];
-        foreach( $jb as $num => $orders )
-        {
-            $storedmodels = json_decode($orders->storeditems,true)??[];
-            $resp['storeditems'][$orders->id] = $this->proceedStoredModels($storedmodels);
-            $resp['statuses'][$orders->id] = $orders->status;
-        }
-        return $resp;
     }
 
     protected function proceedStoredModels( array $storedmodels )
@@ -219,10 +226,10 @@ class MyStore extends Common
                 }
             }
         }
-        if ( User::hasPermission('hideclients') )
-            $this->hideClientsName($stock);
+        //if ( User::hasPermission('hideclients') ) $this->hideClientsName($stock);
         return $stock;
     }
+    /*
     protected function hideClientsName( array &$stock )
     {
         $allClients = $this->getClients();
@@ -237,6 +244,32 @@ class MyStore extends Common
             }
         }
     }
+    */
+    /*
+     * OLD
+     */
+    /*
+    public function getStoredModels() : array
+    {
+        $jb = Mybox::find()->where(['userid'=>User::getID()]);
+        $storedmodels = [];
+        if (!$jb->exists()) return [];
+        
+        $jb = $jb->all();
+        
+        $resp = [
+            'storeditems' => [],
+            'statuses' => [],
+        ];
+        foreach( $jb as $num => $orders )
+        {
+            $storedmodels = json_decode($orders->storeditems,true)??[];
+            $resp['storeditems'][$orders->id] = $this->proceedStoredModels($storedmodels);
+            $resp['statuses'][$orders->id] = $orders->status;
+        }
+        return $resp;
+    }
+    */
 
     public function edit()
     {
@@ -298,8 +331,8 @@ class MyStore extends Common
             $itemData->storageroom = $this->room;
             $itemData->shelfnum = $this->shelf;
             
-            $itemData->reserv_user_id = null;
-            $itemData->reserv_user_name = null;
+            //$itemData->reserv_user_id = null;
+            //$itemData->reserv_user_name = null;
             $itemData->item_quantity++;
             return $itemData->save(false);
         }

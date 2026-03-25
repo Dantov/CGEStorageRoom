@@ -229,11 +229,35 @@ class Common
 
 	public function setIdAsKeys( array &$array )
     {
+    	$flag = false;
         foreach ( $array as $key => $element )
         {
             if (!isset($element['id'])) continue;
-            $array[$element['id']] = $element;
+            $IDToReplace = $element['id'];
+
+            if ( array_key_exists($IDToReplace, $array) ) {
+            	$flag = true;
+            	$array[$IDToReplace.'_prev'] = $element;
+            	unset($array[$key]);
+            	$array[$IDToReplace] = $element;
+            	continue;
+            }
+            $array[$IDToReplace] = $element;
             unset($array[$key]);
+        }
+
+        if ( $flag )
+        {
+        	foreach ( $array as $key => $element2 )
+	        {
+	            if (!isset($element2['id'])) continue;
+	            $IDToReplace = $element2['id'];
+	            if ( $IDToReplace !== $key )
+	            {
+	            	$array[$IDToReplace] = $element2;
+	            	unset($array[$key]);	
+	            }
+	        }
         }
     }
 

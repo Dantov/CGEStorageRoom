@@ -145,7 +145,8 @@ class MyBox
             success:function(resp) {
                 if (resp) {
                     $('#jewel-box-modal').modal('hide');
-                    reload(true);
+                    //reload(true);
+                    reload();
                 } 
             }
         });

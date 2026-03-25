@@ -274,7 +274,7 @@ class SiteController extends GeneralController
                     exit(json_encode("not enought rights"));
 
                 if ( !$proceed ) exit(json_encode(false));
-                exit(json_encode($mybox->add()));
+                exit(json_encode($mybox->addItem()));
             break;
             case "show":
                 if ( !$mybox->accessControl() ) 
@@ -316,8 +316,10 @@ class SiteController extends GeneralController
                 if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                $mybox->returnItem(); 
-                $response->redirect(['/site/my/','box'=>'show'])->send();
+                
+                exit(json_encode( $mybox->returnItem() ));
+
+                //$response->redirect(['/site/my/','box'=>'show'])->send();
             break;
             case "sendorder":
                 if ( !$mybox->accessControl() ) 

@@ -3,6 +3,7 @@ use yii\helpers\{Html,Url};
 use app\models\User;
 
 $this->title = 'Box ' . User::getFIO();
+
 ?>
 
 <div class="work-progres">

@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 use app\models\{User,Common};
-
+use app\models\serviceClasses\MyStore;
 $this->title = $model['item_name'] . '-' . $model['item_category'];
 
 $modelPath = Common::modelPath($model['project'],$model['id']);
@@ -18,8 +18,9 @@ JS;
 $this->registerJs($imgJs);
 
 $quantity = $model['item_quantity'] > 0;
-$reserved = $model['reserv_user_id']??false;
-
+//$reserved = $model['reserv_user_id']??false;
+$reserved = MyStore::hasItemInMyBox($model['id']);
+$orderID = MyStore::getOrderID();
 $modelDeleted = ((int)$model['item_status']===2);
 $modelNonPublished = ((int)$model['item_status']===0);
 $modelPublished = ((int)$model['item_status']===1);
@@ -32,20 +33,21 @@ $modelPublished = ((int)$model['item_status']===1);
             <?php if ( User::hasPermission('mybox') && !User::isAdmin() ):?>
             <div class="d-flex row justify-content-between">
 
-                <?php if( $model['stored'] ):?>
+                <?php if( $reserved ): //$model['stored']?>
                 <div class="col-sm-4">
                     <div class="alert alert-primary mb-0" role="alert"><b>This item is in your box.</b></div>
                 </div>
                 <div class="col-sm-8">
-                    <button type="button" data-id="<?=$model['id']?>" class="btn btn-info btn-lg btn-block putback">
+                    <button type="button" data-orderid="<?=$orderID?>" data-id="<?=$model['id']?>" class="btn btn-info btn-lg btn-block editbtnJewelBox">
+                        <input class="addJBdata" type="hidden" data-img="/stock/<?=$modelPath?>/images/<?=$model['mainimage']?>" data-link="<?=Url::to(['site/view','id'=>$model['id'] ])?>" data-n3d="<?=$model['item_name']?>" data-mtype="<?=$model['item_category']?>" data-client="<?=htmlentities($model['project'])?>" data-room="<?=$model['storageroom']?>" data-shelf="<?=$model['shelfnum']?>">
                         Put Back
                     </button>
                 </div>
                 <?php endif;?>
 
-                <?php if( $quantity && !$model['stored'] ):?>
+                <?php if( $quantity && !$reserved ): //!$model['stored']?>
                 <button type="button" data-id="<?=$model['id']?>" class="btn btn-primary btn-lg btn-block mt-2 jewelboxBtnView">
-                    <input class="addJBdata" type="hidden" data-img="/stock/<?=$modelPath?>/images/<?=$model['mainimage']?>" data-link="<?=Url::to(['site/view','id'=>$model['id'] ])?>" data-n3d="<?=$model['item_name']?>" data-mtype="<?=$model['item_category']?>" data-client="<?=htmlentities($model['project'])?>">
+                    <input class="addJBdata" type="hidden" data-img="/stock/<?=$modelPath?>/images/<?=$model['mainimage']?>" data-link="<?=Url::to(['site/view','id'=>$model['id'] ])?>" data-n3d="<?=$model['item_name']?>" data-mtype="<?=$model['item_category']?>" data-client="<?=htmlentities($model['project'])?>" data-room="<?=$model['storageroom']?>" data-shelf="<?=$model['shelfnum']?>">
                     Add item to My Box
                 </button>
                 <?php endif;?>
