@@ -86,14 +86,21 @@ class MyBox
             modal.querySelector('#jbModalLabel').innerHTML = "Set shelf num and room or leave it in prev state";
             modal.querySelector('.mjb-img').src = modelImg;
             modal.querySelector('.mjb-mtype').innerHTML = modelData.getAttribute('data-name');
+            modal.querySelector('.mjb-client').innerHTML = modelData.getAttribute('data-cat');
+            modal.querySelector('.mjb-link').parentElement.innerHTML = modelData.getAttribute('data-prj');
+            modal.querySelector('.located-in').innerHTML = "Put back to: ";
 
-            modal.querySelector('.mjb-client').querySelector('#storageRoomsbox').value = modelData.getAttribute('data-room');
-            modal.querySelector('.mjb-client').querySelector('#inputShelfBox').value = modelData.getAttribute('data-shelf');
-            modal.querySelector('.mjb-client').querySelector('.storageRoomsbox').classList.remove('d-none');
-            modal.querySelector('.mjb-client').querySelector('.inputShelfBox').classList.remove('d-none');
+            modal.querySelector('#storageRoomsbox').value = modelData.getAttribute('data-room');
+            modal.querySelector('#inputShelfBox').value = modelData.getAttribute('data-shelf');
+            modal.querySelector('.storageRoomsbox').classList.remove('d-none');
+            modal.querySelector('.inputShelfBox').classList.remove('d-none');
 
-            if (modal.querySelector('.mjb-link')) 
-                modal.querySelector('.mjb-link').remove();
+            modal.querySelector('.roomboxlocated').classList.add('d-none');
+            modal.querySelector('.shelfboxlocated').classList.add('d-none');
+            
+
+            
+            //if (modal.querySelector('.mjb-link')) modal.querySelector('.mjb-link').remove();
 
             if (modal.querySelector('#mjb-commenttext'))
                 modal.querySelector('#mjb-commenttext').parentElement.remove();
@@ -118,8 +125,8 @@ class MyBox
 
             if ( condition == "return" )
             {
-                self.queryObj.room = modal.querySelector('.mjb-client').querySelector('#storageRoomsbox').value;
-                self.queryObj.shelf = modal.querySelector('.mjb-client').querySelector('#inputShelfBox').value;
+                self.queryObj.room = modal.querySelector('#storageRoomsbox').value;
+                self.queryObj.shelf = modal.querySelector('#inputShelfBox').value;
             }
             
             self.pushJBData(condition);

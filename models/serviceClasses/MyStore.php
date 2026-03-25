@@ -78,16 +78,18 @@ class MyStore extends Common
 
     public function add() : bool
     {
-        $itemData = Stock::find($this->modelID);
+        $itemData = Stock::find()->where(['id'=>$this->modelID]);
         if (!$itemData->exists()) false;
         $itemData = $itemData->one();
 
         // Check if already reserved
         if ( $itemData->reserv_user_id ) return false;
+        if ( $itemData->item_quantity < 1 ) return false;
 
         // If all good reserv this item
         $itemData->reserv_user_id = User::getID();
         $itemData->reserv_user_name = User::getFIO();
+        $itemData->item_quantity = $itemData->item_quantity-1;
         $reserved = $itemData->save(false);
         if ( !$reserved ) return false;
 
@@ -116,7 +118,17 @@ class MyStore extends Common
         $mybox->userid = User::getID();
         $mybox->lastdate = date('Y-m-d');
 
-        return $mybox->save(false);
+        if ( $mybox->save(false) ) {
+            return true;
+        } else {
+            // Unreserve if something wrong
+            $itemData->reserv_user_id = null;
+            $itemData->reserv_user_name = null;
+            $itemData->item_quantity++;
+            $itemData->save(false);
+        }
+
+        return false;
     }
 
     public function getOrderStatus( int $id ) : int
@@ -194,7 +206,8 @@ class MyStore extends Common
             foreach( $storedmodels as $sm ) {
                 if ( $model['id'] === $sm['id'] ){
                     $model['comment'] = $sm['comment'];
-                    $model['storeprice'] = $sm['price'];// round($model['model_cost'] / 2); //
+                    $model['storeprice'] = $sm['price'];
+                    $model['grabbingdate'] = $sm['grabbingdate'];
                     //$model['access'] = $sm['access'];// round($model['model_cost'] / 2); //
                 }
             }
@@ -277,7 +290,7 @@ class MyStore extends Common
 
         if ($returned)
         {
-            $itemData = Stock::find($this->modelID);
+            $itemData = Stock::find()->where(['id'=>$this->modelID]);
             if (!$itemData->exists()) return false;
             $itemData = $itemData->one();
 
@@ -287,6 +300,7 @@ class MyStore extends Common
             
             $itemData->reserv_user_id = null;
             $itemData->reserv_user_name = null;
+            $itemData->item_quantity++;
             return $itemData->save(false);
         }
 

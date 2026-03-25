@@ -379,9 +379,15 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                         <tbody>
                             <tr align="center">
                                 <td><img class="mjb-img" src="" width="80rem;"></td>
-                                <td class="mjb-mtype">
+                                <td class="mjb-mtype"></td>
+                                <td class="mjb-client"></td>
+                                <td>
+                                    <a class="mjb-link btn btn-success btn-sm" href="" role="button"><i class="fa-solid fa-eye"></i></a>
                                 </td>
-                                <td class="mjb-client">
+                            </tr>
+                            <tr>
+                                <td class="located-in">located in:</td>
+                                <td colspan="2">
                                     <div class="form-group d-none storageRoomsbox">
                                         <label for="storageRoomsbox">Storage Room:</label>
                                         <select class="form-control" id="storageRoomsbox" value="">
@@ -390,25 +396,17 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                         <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="form-group d-none inputShelfBox">
-                                        <label for="inputShelfBox">Shelf:</label>
-                                        <input type="text" class="form-control" id="inputShelfBox"> 
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="mjb-link btn btn-success btn-sm" href="" role="button"><i class="fa-solid fa-eye"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td >located in:</td>
-                                <td colspan="2">
-                                    <div class="form-row">
+                                    <div class="form-row roomboxlocated">
                                         <label for="roomboxlocated">Room:</label>
                                         <input type="text" class="form-control" id="roomboxlocated" value="" disabled>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="form-row">
+                                    <div class="form-group d-none inputShelfBox">
+                                        <label for="inputShelfBox">Shelf:</label>
+                                        <input type="text" class="form-control" id="inputShelfBox"> 
+                                    </div>
+                                    <div class="form-row shelfboxlocated">
                                         <label for="shelfboxlocated">Shelf:</label>
                                         <input type="text" class="form-control" id="shelfboxlocated" value="" disabled>
                                     </div>

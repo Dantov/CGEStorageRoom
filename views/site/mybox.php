@@ -34,7 +34,8 @@ $this->title = 'Box ' . User::getFIO();
                         <th>View Link</th>
                         <th>Comment</th>
                         <th>Was present in Room/Shelf</th>
-                        <th>Price ()</th>
+                        <th><!--Rent Prices (Total:)--></th>
+                        <th>Grabbing Date</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -49,7 +50,7 @@ $this->title = 'Box ' . User::getFIO();
     <tr align="center">
         <td><img src="<?="/" . $storedItem['mainimage']?>" width="70 rem;"></td>
         <td><?=$storedItem['item_name'] . " / " .$storedItem['item_category']?></td>
-        <td><?= htmlentities($storedItem['project'])?></td>
+        <td><?=htmlentities($storedItem['project'])?></td>
         <td>
             <a class="btn btn-outline-primary btn-sm" href="<?=Url::to(['/site/view/','id'=>$storedItem['id']])?>" role="button"><i class="fa-solid fa-eye"></i></a>
         </td>
@@ -62,9 +63,10 @@ $this->title = 'Box ' . User::getFIO();
         <td>
             <h5><span class="badge badge-warning"><?=$storedItem['storeprice']?></span></h5>
         </td>
+        <td><?=formatDate($storedItem['grabbingdate'])?></td>
         <td>
             <button type="button" data-orderid="<?=$orderID?>" data-id="<?=$storedItem['id']?>" class="btn btn-sm btn-dark editbtnJewelBox" title="Put back">
-                <input class="editJBdata" type="hidden" data-img="<?="/" . $storedItem['mainimage']?>" data-link="<?=Url::to(['/site/view/','id'=>$storedItem['id']])?>" data-name="<?=$storedItem['item_name']?>" data-room="<?=$storedItem['storageroom']?>" data-shelf="<?=$storedItem['shelfnum']?>">
+                <input class="editJBdata" type="hidden" data-img="<?="/" . $storedItem['mainimage']?>" data-prj="<?=htmlentities($storedItem['project'])?>" data-name="<?=$storedItem['item_name']?>" data-room="<?=$storedItem['storageroom']?>" data-shelf="<?=$storedItem['shelfnum']?>" data-cat="<?=$storedItem['item_category']?>">
                 <i class="fa-solid fa-rotate-left"></i>Put back
             </button>
         </td>
