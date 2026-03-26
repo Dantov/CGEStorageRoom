@@ -16,11 +16,11 @@ if (User::hasFilesAccess($model['id'])) {
     $bgcolor = 'success';
     $mainTitle = "access to files";
 }
-$clientName = empty($model['project']) ? '<b class="text-muted">empty</b>' : htmlentities($model['project']);
+$clientName = empty($model['item_category']) ? '<b class="text-muted">empty</b>' : htmlentities($model['item_category']);
 ?>
 <div class="card bg-light mb-1 mainCard" data-toggle="tooltip" title="<?=$mainTitle?>" style="width: <?=$session->get('tilesControlSize')?>rem;">
     <div class="card-header p-1 cursorPointer text-truncate bg-<?=$bgcolor?> text-white text-center">
-        <small data-toggle="tooltip" title="<?=htmlentities($model['project'])?>" data-placement="top"><?=$clientName;?></small>
+        <small data-toggle="tooltip" title="<?=htmlentities($model['item_category'])?>" data-placement="top"><?=$clientName;?></small>
         <div class="clearfix"></div>
     </div>
     <a href="<?=Url::to(['site/view','id'=>$model['id']])?>">
@@ -44,7 +44,7 @@ $clientName = empty($model['project']) ? '<b class="text-muted">empty</b>' : htm
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item p-1" style="font-size: small;">
-                <small class="float-right" data-toggle="tooltip" data-placement="top" title="Category"><b><?=$model['item_category']?></b></small>
+                <small class="float-right" data-toggle="tooltip" data-placement="top" title="Category"><b><?=$model['project']?></b></small>
                 <small onclick = "copyValueToClipBoard(this)" class="float-right text-truncate" data-toggle="tooltip" data-placement="top" title="name"><?=$model['item_name']?> |&nbsp;</small>
                 <div class="clearfix"></div>
             </li>

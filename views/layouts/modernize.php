@@ -299,7 +299,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 </div>
                             </a>
                             <div class="dropdown-menu drop-3">
-                                <?php $whatinside=User::isAdmin()?MyStore::getModelsCount(true)." items inside":MyStore::getModelsCount()." garbages inside"?>
+                                <?php $whatinside=User::isAdmin()?MyStore::getModelsCount(true)." items inside":MyStore::getModelsCount()." item(s) inside"?>
                                 <div class="profile-r align-self-center">
                                     <h5 class="sub-title-w3-agileits"><small><?=$whatinside?></small></h5>
                                 </div>

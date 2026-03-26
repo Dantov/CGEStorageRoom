@@ -34,7 +34,7 @@ $this->title = 'Box ' . User::getFIO();
                         <th>Project</th>
                         <th>View Link</th>
                         <th>Comment</th>
-                        <th>Was present in Room/Shelf</th>
+                        <th>Return to Room/Shelf</th>
                         <th><!--Rent Prices (Total:)--></th>
                         <th>Grabbing Date</th>
                         <th></th>
