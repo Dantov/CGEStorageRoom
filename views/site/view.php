@@ -17,8 +17,10 @@ $imgJs = <<<JS
 JS;
 $this->registerJs($imgJs);
 
+$whoReserved = json_decode($model['reserv_user_names'],true)??[];
+$whoReserved = implode(', ', $whoReserved);
+
 $quantity = $model['item_quantity'] > 0;
-//$reserved = $model['reserv_user_id']??false;
 $reserved = MyStore::hasItemInMyBox($model['id']);
 $orderID = MyStore::getOrderID();
 $modelDeleted = ((int)$model['item_status']===2);
@@ -140,9 +142,16 @@ $modelPublished = ((int)$model['item_status']===1);
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
                 <i class="fa-solid fa-arrow-down-9-1" data-toggle="tooltip" data-placement="top" title="Reserved count"></i>
-                <span class="d-none d-lg-inline">Reserved count</span>
+                <span class="d-none d-lg-inline">Reserv count</span>
             </div>
             <div class="p-1 bg-light" id="modelType"><b><?=$model['reserv_count']?></b></div>
+        </div>
+        <div class="d-flex justify-content-between bg-dots fontsView">
+            <div class="p-1 bg-light">
+                <i class="fa-solid fa-users" data-toggle="tooltip" data-placement="top" title="Who reserved"></i>
+                <span class="d-none d-lg-inline">Who reserved</span>
+            </div>
+            <div class="p-1 bg-light" id="modelType"><b><?=$whoReserved?></b></div>
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">

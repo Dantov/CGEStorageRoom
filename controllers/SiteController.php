@@ -297,11 +297,7 @@ class SiteController extends GeneralController
 
                 exit(json_encode( $mybox->setModelPrice() ));
             break;
-            case "openmodel":
-                if ( !User::isAdmin() || !$proceed ) exit(json_encode(false));
-                exit(json_encode( $mybox->openModelFiles('one') ));
-            break;
-            case "openallmodels":
+            case "putallback":
                 if ( !User::isAdmin() || !$proceed ) exit(json_encode(false));
 
                 exit(json_encode( $mybox->openModelFiles('all') ));
@@ -316,10 +312,14 @@ class SiteController extends GeneralController
                 if ( !$mybox->accessControl() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                
                 exit(json_encode( $mybox->returnItem() ));
+            break;
+            case "putallback":
+                if ( !$mybox->accessControl() ) 
+                    $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
-                //$response->redirect(['/site/my/','box'=>'show'])->send();
+                $mybox->returnAllItems();
+                $response->redirect(['/site/my/','box'=>'show'])->send();
             break;
             case "sendorder":
                 if ( !$mybox->accessControl() ) 

@@ -103,8 +103,6 @@ class MyStore extends Common
         if (!$jb->exists()) return false;
         $jb = $jb->one();
 
-
-
         return $jb->id;
     }
 
@@ -114,16 +112,21 @@ class MyStore extends Common
         if (!$itemData->exists()) false;
         $itemData = $itemData->one();
 
-        // Check if
+        // Check if item has quantity
         if ( $itemData->item_quantity < 1 ) return false;
 
         // If all good reserv this item
         $itemData->item_quantity = $itemData->item_quantity-1;
         $itemData->reserv_count++;
-        //$itemData->reserv_user_names .= ";".$itemData->reserv_user_names;
+
+        $reservUserNames = json_decode($itemData->reserv_user_names,true)??[];
+        $reservUserNames[] = User::getFIO();
+        $itemData->reserv_user_names = json_encode($reservUserNames,true);
+
         $reserved = $itemData->save(false);
         if ( !$reserved ) return false;
 
+        // ** MY BOX PART ** //
         $mybox = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
         $boxItems = [];
         if ($mybox->exists())
@@ -242,47 +245,6 @@ class MyStore extends Common
         //if ( User::hasPermission('hideclients') ) $this->hideClientsName($stock);
         return $stock;
     }
-    /*
-    protected function hideClientsName( array &$stock )
-    {
-        $allClients = $this->getClients();
-        foreach ( $stock as &$model )
-        {
-            foreach ( $allClients as $clientTmpl )
-            {
-                if ( $model['project'] == $clientTmpl['name'] ){
-                    $model['project'] = $clientTmpl['secondname'];
-                    break;
-                }
-            }
-        }
-    }
-    */
-    /*
-     * OLD
-     */
-    /*
-    public function getStoredModels() : array
-    {
-        $jb = Mybox::find()->where(['userid'=>User::getID()]);
-        $storedmodels = [];
-        if (!$jb->exists()) return [];
-        
-        $jb = $jb->all();
-        
-        $resp = [
-            'storeditems' => [],
-            'statuses' => [],
-        ];
-        foreach( $jb as $num => $orders )
-        {
-            $storedmodels = json_decode($orders->storeditems,true)??[];
-            $resp['storeditems'][$orders->id] = $this->proceedStoredModels($storedmodels);
-            $resp['statuses'][$orders->id] = $orders->status;
-        }
-        return $resp;
-    }
-    */
 
     public function edit()
     {
@@ -344,13 +306,32 @@ class MyStore extends Common
             $itemData->storageroom = $this->room;
             $itemData->shelfnum = $this->shelf;
             
-            //$itemData->reserv_user_name = null;
             $itemData->item_quantity++;
             $itemData->reserv_count--;
+
+            $reservUserNames = json_decode($itemData->reserv_user_names,true)??[];
+            foreach ($reservUserNames as $key => $uName) {
+                if ( $uName == User::getFIO() )
+                    unset($reservUserNames[$key]);
+            }
+            $itemData->reserv_user_names = json_encode($reservUserNames,true);
+
             return $itemData->save(false);
         }
 
         return false;
+    }
+
+    public function returnAllItems() : bool
+    {
+        $box = Mybox::find()->where(['userid'=>User::getID()]);
+        if ( !$box->exists() ) return false;
+        $box = $box->one();
+        $storeditems = json_decode($box->storeditems,true)??[];
+        $box->delete();
+
+        
+
     }
 
     public function removeOrder( int $orderid )
