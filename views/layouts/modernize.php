@@ -288,32 +288,26 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                 <div class="p-1 bd-highlight jewelboxTopbar">
                     <ul class="user-bar top-icons-agileits-w3layouts">
                         <li class="nav-item dropdown">
-                            <a class="dropdown-toggle" style="" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">
+                            <a class="dropdown-toggle" style="" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <?php if( !User::isAdmin()): ?>
                                 <span class="p-1 border border-dark bg-secondary text-light rounded-circle jbBadge"><?=MyStore::getModelsCount()?></span>
                                 <?php endif; ?>
                                 <?php $colormyboxicon = MyStore::getModelsCount()>0?"primary":"secondary"; ?>
-                                <div class="profile-l mr-0 text-<?=$colormyboxicon?>" data-toggle="tooltip" title="My Box">
+                                <?php $mboxTitle = User::isAdmin()?"Common Box":"My Box"; ?>
+                                <div class="profile-l mr-0 text-<?=$colormyboxicon?>" data-toggle="tooltip" title="<?=$mboxTitle?>">
                                     <h2><i class="fa-solid fa-box-open"></i></h2>
-                                    <!-- <img src="/pictAssets/jewels-inside.png" class="img-fluid" alt="Responsive image"> -->
                                 </div>
                             </a>
                             <div class="dropdown-menu drop-3">
-                                <?php $whatinside=User::isAdmin()?MyStore::getOrdersCount()." orders inside":MyStore::getModelsCount()." garbages inside"?>
+                                <?php $whatinside=User::isAdmin()?MyStore::getModelsCount(true)." items inside":MyStore::getModelsCount()." garbages inside"?>
                                 <div class="profile-r align-self-center">
                                     <h5 class="sub-title-w3-agileits"><small><?=$whatinside?></small></h5>
                                 </div>
                                 <div class="dropdown-divider"></div>
-                                <?php $uri = User::isAdmin() ? 'showorders' : 'show' ?>
+                                <?php $uri = User::isAdmin() ? 'common' : 'show' ?>
                                 <a href="<?=Url::to(['site/my','box'=>$uri])?>" class="dropdown-item mt-2">
                                     <h4><i class="far fa-gem mr-3"></i>Show</h4>
                                 </a>
-                                <?php if(MyStore::getModelsCount()): ?>
-                                <a href="<?=Url::to(['site/my','box'=>'send'])?>" class="dropdown-item mt-2">
-                                    <h4><i class="fa-regular fa-paper-plane"></i> Send Query</h4>
-                                </a>
-                                <?php endif;?>
                             </div>
                         </li>
                     </ul>
@@ -334,7 +328,7 @@ $this->registerJs($controller->jsCONSTANTS,View::POS_HEAD);
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <?php if(User::hasPermission('mybox')): ?>
-                                    <a href="<?=Url::to(['site/jewel','box'=>'show'])?>" class="dropdown-item mt-2">
+                                    <a href="<?=Url::to(['site/my','box'=>'show'])?>" class="dropdown-item mt-2">
                                         <h4><i class="fa-solid fa-box-open"></i> My Box</h4>
                                     </a>
                                 <?php endif;?>

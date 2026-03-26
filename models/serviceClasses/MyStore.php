@@ -57,13 +57,26 @@ class MyStore extends Common
         parent::__construct();
 	}
 
-    public static function getModelsCount() : int
+    public static function getModelsCount( bool $all = false ) : int
     {
-        $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
-        if ($jb->exists()) {
-            $jb =$jb->one();
-            return count(json_decode($jb->storeditems,true)??[]);
-        } 
+        if ( $all )
+        {
+            $commonBox = Mybox::find();
+            if (!$commonBox->exists()) return 0;
+            $commonBox =$commonBox->asArray()->all();
+            $countAll = 0;
+            foreach ($commonBox as $singleBox) {
+                $countAll += count(json_decode($singleBox['storeditems'],true)??[]);
+            }
+            return $countAll;
+            
+        } else {
+            $jb = Mybox::find()->where(['userid'=>User::getID()])->andWhere(['status'=>0]);
+            if ($jb->exists()) {
+                $jb =$jb->one();
+                return count(json_decode($jb->storeditems,true)??[]);
+            }     
+        }
         return 0;
     }
     public static function getOrdersCount() : int
@@ -105,9 +118,9 @@ class MyStore extends Common
         if ( $itemData->item_quantity < 1 ) return false;
 
         // If all good reserv this item
-        //$itemData->reserv_user_id = User::getID();
-        //$itemData->reserv_user_name = User::getFIO();
         $itemData->item_quantity = $itemData->item_quantity-1;
+        $itemData->reserv_count++;
+        //$itemData->reserv_user_names .= ";".$itemData->reserv_user_names;
         $reserved = $itemData->save(false);
         if ( !$reserved ) return false;
 
@@ -140,10 +153,10 @@ class MyStore extends Common
             return true;
         } else {
             // Unreserve if something wrong
-            $itemData->reserv_user_id = null;
-            $itemData->reserv_user_name = null;
-            $itemData->item_quantity++;
-            $itemData->save(false);
+            //$itemData->reserv_user_id = null;
+            //$itemData->reserv_user_name = null;
+            //$itemData->item_quantity++;
+            //$itemData->save(false);
         }
 
         return false;
@@ -171,10 +184,10 @@ class MyStore extends Common
         $jb = Mybox::find();
         if ( $userID ) {
            $jb->where(['userid'=>User::getID()]); 
-        } else {
+        } //else {
             // For admin we don't show not formed orders
-            $jb->where(['<>','status',0]); 
-        }
+            //$jb->where(['<>','status',0]); 
+        //}
 
         if ( !$jb->exists() ) return [];
 
@@ -331,9 +344,9 @@ class MyStore extends Common
             $itemData->storageroom = $this->room;
             $itemData->shelfnum = $this->shelf;
             
-            //$itemData->reserv_user_id = null;
             //$itemData->reserv_user_name = null;
             $itemData->item_quantity++;
+            $itemData->reserv_count--;
             return $itemData->save(false);
         }
 

@@ -139,6 +139,13 @@ $modelPublished = ((int)$model['item_status']===1);
         </div>
         <div class="d-flex justify-content-between bg-dots fontsView">
             <div class="p-1 bg-light">
+                <i class="fa-solid fa-arrow-down-9-1" data-toggle="tooltip" data-placement="top" title="Reserved count"></i>
+                <span class="d-none d-lg-inline">Reserved count</span>
+            </div>
+            <div class="p-1 bg-light" id="modelType"><b><?=$model['reserv_count']?></b></div>
+        </div>
+        <div class="d-flex justify-content-between bg-dots fontsView">
+            <div class="p-1 bg-light">
                 <i class="fa-solid fa-ruler-combined"></i>
                 <span class="d-none d-lg-inline">Item size mm</span>
             </div>

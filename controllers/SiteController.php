@@ -284,7 +284,7 @@ class SiteController extends GeneralController
                 $comp = compact(['allOrders']);
                 return $this->render('mybox',$comp);
             break;
-            case "showorders":
+            case "common":
                 if ( !User::isAdmin() ) 
                     $response->redirect(['/site/error/','message'=>"forbidden"])->send();
 
